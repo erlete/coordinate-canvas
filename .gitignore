@@ -1,6 +1,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,macos,linux,visualstudiocode,vim,python,java,c++,cmake,ros
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,linux,visualstudiocode,vim,python,java,c++,cmake,ros
 
+coordinates.json
+
 ### C++ ###
 # Prerequisites
 *.d
