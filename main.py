@@ -12,6 +12,7 @@ import json
 from matplotlib import pyplot as plt
 
 
+LINE_COLORS = [
     "darkorange",
     "darkblue",
     "darkgreen",
@@ -74,12 +75,17 @@ if __name__ == "__main__":
         # Previous drawings' plotting:
         if index > 0:
             for sub_index in range(index):
+
+                # Auxiliary index to avoid causing an IndexError:
+                color_index = sub_index % len(LINE_COLORS)
+
                 plt.plot(
                     data[f"line_{sub_index + 1}"]['x'],
                     data[f"line_{sub_index + 1}"]['y'],
                     "--",
                     marker="2",
                     markersize=5,
+                    color=LINE_COLORS[color_index]
                 )
 
         # Line drawing and display:
