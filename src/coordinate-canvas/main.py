@@ -48,7 +48,7 @@ class LineBuilder:
         self.line.figure.canvas.draw()
 
 
-if __name__ == "__main__":
+def main():
 
     # Parameter input:
     width = float(input("Enter width: "))
