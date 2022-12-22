@@ -11,6 +11,7 @@ Author:
 from bidimensional import Coordinate
 from bidimensional.functions import Spline
 from matplotlib import pyplot as plt
+import matplotlib
 
 from .config import CONFIG
 
@@ -25,19 +26,22 @@ class LineBuilder:
 
     CONFIG = CONFIG
 
-    def __init__(self, line, ax, width, height, color):
+    def __init__(self, line: matplotlib.lines.Line2D,
+                 ax: matplotlib.axes._subplots.AxesSubplot,
+                 width: float, height: float, color: str) -> None:
+
         self.line = line
-        self.color = color
         self.ax = ax
         self.width = width
         self.height = height
-        self.limiter = min(width, height)
+        self.color = color
+
         self.x, self.y = list(line.get_xdata()), list(line.get_ydata())
 
         self.cid = line.figure.canvas.mpl_connect("button_press_event", self)
         self.line.figure.canvas.draw()
 
-    def __call__(self, event):
+    def __call__(self, event) -> None:
         if event.inaxes != self.line.axes:
             return
 
@@ -48,7 +52,7 @@ class LineBuilder:
             sp = Spline([
                 Coordinate(x_, y_)
                 for x_, y_ in zip(self.x, self.y)
-            ], gen_step=self.limiter / 100)
+            ], gen_step=min(self.width, self.height) / 100)
 
             x = [x_ for x_, _ in sp.positions]
             y = [y_ for _, y_ in sp.positions]
