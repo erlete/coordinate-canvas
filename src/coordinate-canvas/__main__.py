@@ -1,14 +1,12 @@
 import json
-
-import matplotlib.pyplot as plt
-
-from .utils import LineBuilder
-from bidimensional import Coordinate
-from bidimensional.functions import Spline
 from itertools import cycle
 
-import json
+import matplotlib.pyplot as plt
+from bidimensional import Coordinate
+from bidimensional.functions import Spline
+
 from .config import CONFIG
+from .utils import LineBuilder
 
 
 def validate_input(message: str):
@@ -34,15 +32,15 @@ def validate_input(message: str):
 
     return float(value)
 
+# Constants' definition:
 
 COLORS = cycle(CONFIG.get("colors"))
-colorcache = []
 
 # Parameter input:
 
 width = validate_input("Enter width: ")
 height = validate_input("Enter height: ")
-line_no = int(validate_input("Enter the number of lines to draw: "))
+line_count = int(validate_input("Enter the number of lines to draw: "))
 
 # Data output template:
 
@@ -50,11 +48,15 @@ data = {
     f"line_{index + 1}": {
         "x": [],
         "y": []
-    } for index in range(line_no)
+    } for index in range(line_count)
 }
 
-for index in range(line_no):
-    colorcache.append(next(COLORS))
+# Main loop:
+
+color_cache = []
+for index in range(line_count):
+    color_cache.append(next(COLORS))
+
     # Figure setup:
 
     fig, ax = plt.subplots()
@@ -66,14 +68,14 @@ for index in range(line_no):
     # Previous drawings' plotting:
 
     if index > 0:
-        for sub_index in range(index):
-            sub_color = colorcache[sub_index]
+        for i in range(index):
+            sub_color = color_cache[i]
 
             coordinates = [
                 Coordinate(x_, y_)
                 for x_, y_ in zip(
-                    data[f"line_{sub_index + 1}"]['x'],
-                    data[f"line_{sub_index + 1}"]['y']
+                    data[f"line_{i + 1}"]['x'],
+                    data[f"line_{i + 1}"]['y']
                 )
             ]
 
@@ -101,9 +103,10 @@ for index in range(line_no):
     line, = ax.plot(
         [], [],
         "-",
-        color=colorcache[-1]
+        color=color_cache[-1]
     )
-    builder = LineBuilder(line, ax, width, height, colorcache[-1])
+    builder = LineBuilder(line, ax, width, height, color_cache[-1])
+
     plt.show()
 
     # Data storage:
