@@ -9,7 +9,7 @@ from .config import CONFIG
 from .utils import LineBuilder
 
 
-def validate_input(message: str):
+def validate_input(message: str) -> float:
     """Input validation method.
 
     This method validates a given input. If the input is not numeric, then a
@@ -31,6 +31,7 @@ def validate_input(message: str):
         raise ValueError("the input value must be numeric")
 
     return float(value)
+
 
 # Constants' definition:
 

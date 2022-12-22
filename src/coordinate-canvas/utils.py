@@ -8,10 +8,10 @@ Author:
 """
 
 
-from matplotlib import pyplot as plt
 from bidimensional import Coordinate
 from bidimensional.functions import Spline
-import json
+from matplotlib import pyplot as plt
+
 from .config import CONFIG
 
 
