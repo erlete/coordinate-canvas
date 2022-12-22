@@ -9,6 +9,10 @@ Author:
 
 
 from matplotlib import pyplot as plt
+from bidimensional import Coordinate
+from bidimensional.functions import Spline
+import json
+from .config import CONFIG
 
 
 class LineBuilder:
@@ -19,8 +23,15 @@ class LineBuilder:
     in a list of tuples.
     """
 
-    def __init__(self, line):
+    CONFIG = CONFIG
+
+    def __init__(self, line, ax, width, height, color):
         self.line = line
+        self.color = color
+        self.ax = ax
+        self.width = width
+        self.height = height
+        self.limiter = min(width, height)
         self.x, self.y = list(line.get_xdata()), list(line.get_ydata())
 
         self.cid = line.figure.canvas.mpl_connect("button_press_event", self)
@@ -33,5 +44,31 @@ class LineBuilder:
         self.x.append(event.xdata)
         self.y.append(event.ydata)
 
-        self.line.set_data(self.x, self.y)
+        if len(self.x) > 1:
+            sp = Spline([
+                Coordinate(x_, y_)
+                for x_, y_ in zip(self.x, self.y)
+            ], gen_step=self.limiter / 100)
+
+            x = [x_ for x_, _ in sp.positions]
+            y = [y_ for _, y_ in sp.positions]
+
+            sp.plot_input(
+                CONFIG.get("input").get("shape"),
+                ms=CONFIG.get("input").get("size"),
+                alpha=CONFIG.get("input").get("alpha"),
+                color=f"dark{self.color}",
+            )
+
+        else:
+            x, y = self.x, self.y
+            self.ax.plot(
+                x, y,
+                CONFIG.get("input").get("shape"),
+                lw=CONFIG.get("input").get("size"),
+                alpha=CONFIG.get("input").get("alpha"),
+                color=f"dark{self.color}"
+            )
+
+        self.line.set_data(x, y)
         self.line.figure.canvas.draw()

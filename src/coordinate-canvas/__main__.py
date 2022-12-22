@@ -3,17 +3,16 @@ import json
 import matplotlib.pyplot as plt
 
 from .utils import LineBuilder
+from bidimensional import Coordinate
+from bidimensional.functions import Spline
+from itertools import cycle
+
+import json
+from .config import CONFIG
 
 
-LINE_COLORS = [
-    "darkorange",
-    "darkblue",
-    "darkgreen",
-    "orange",
-    "blue",
-    "green"
-]
-
+COLORS = cycle(CONFIG.get("colors"))
+colorcache = []
 
 # Parameter input:
 
@@ -31,7 +30,7 @@ data = {
 }
 
 for index in range(line_no):
-
+    colorcache.append(next(COLORS))
     # Figure setup:
 
     fig, ax = plt.subplots()
@@ -44,30 +43,43 @@ for index in range(line_no):
 
     if index > 0:
         for sub_index in range(index):
+            sub_color = colorcache[sub_index]
 
-            # Auxiliary index to avoid causing an IndexError:
+            coordinates = [
+                Coordinate(x_, y_)
+                for x_, y_ in zip(
+                    data[f"line_{sub_index + 1}"]['x'],
+                    data[f"line_{sub_index + 1}"]['y']
+                )
+            ]
 
-            color_index = sub_index % len(LINE_COLORS)
+            sp = Spline(
+                coordinates,
+                gen_step=min(width, height) / 1000
+            )
 
-            plt.plot(
-                data[f"line_{sub_index + 1}"]['x'],
-                data[f"line_{sub_index + 1}"]['y'],
-                "--",
-                marker="2",
-                markersize=5,
-                color=LINE_COLORS[color_index]
+            sp.plot_input(
+                CONFIG.get("input").get("shape"),
+                ms=CONFIG.get("input").get("size"),
+                alpha=CONFIG.get("input").get("alpha"),
+                color=f"dark{sub_color}",
+            )
+
+            sp.plot_positions(
+                CONFIG.get("positions").get("shape"),
+                lw=CONFIG.get("positions").get("size"),
+                alpha=CONFIG.get("positions").get("alpha"),
+                color=sub_color
             )
 
     # Line drawing and display:
 
     line, = ax.plot(
         [], [],
-        "--",
-        marker="2",
-        markersize=5,
-        color=LINE_COLORS[index]
+        "-",
+        color=colorcache[-1]
     )
-    builder = LineBuilder(line)
+    builder = LineBuilder(line, ax, width, height, colorcache[-1])
     plt.show()
 
     # Data storage:
