@@ -1,3 +1,19 @@
+"""Main executable script for the coordinate-canvas module.
+
+This script is the main executable script for the coordinate-canvas module. It
+is used to draw lines on a matplotlib plot and save the coordinates of the
+points that compose the lines.
+
+Notes:
+    This script saves an output file named "coordinates.json" in the current
+    working directory. Said directory is the same over which the module is
+    executed via the command line.
+
+Author:
+    Paulo Sanchez (@erlete)
+"""
+
+
 import json
 from itertools import cycle
 
@@ -104,7 +120,7 @@ for index in range(line_count):
     line, = ax.plot(
         [], [],
         CONFIG.get("positions").get("shape"),
-        lw=CONFIG.get("positions").get("size") * 2,
+        lw=CONFIG.get("positions").get("size") * 2,  # Highlights the line.
         alpha=CONFIG.get("positions").get("alpha"),
         color=color_cache[-1]
     )
