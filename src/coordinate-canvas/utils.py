@@ -27,7 +27,7 @@ class LineBuilder:
     CONFIG = CONFIG
 
     def __init__(self, line: matplotlib.lines.Line2D,
-                 ax: matplotlib.axes._subplots.AxesSubplot,
+                 ax: matplotlib.axes.Axes,
                  width: float, height: float, color: str) -> None:
 
         self.line = line
