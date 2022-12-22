@@ -11,14 +11,38 @@ import json
 from .config import CONFIG
 
 
+def validate_input(message: str):
+    """Input validation method.
+
+    This method validates a given input. If the input is not numeric, then a
+    ValueError is raised.
+
+    Args:
+        message (str): The message to be displayed to the user.
+
+    Raises:
+        ValueError: If the input is not numeric.
+
+    Returns:
+        float: The validated input.
+    """
+
+    value = input(message)
+
+    if not value.isnumeric():
+        raise ValueError("the input value must be numeric")
+
+    return float(value)
+
+
 COLORS = cycle(CONFIG.get("colors"))
 colorcache = []
 
 # Parameter input:
 
-width = float(input("Enter width: "))
-height = float(input("Enter height: "))
-line_no = int(input("Enter the number of lines to draw: "))
+width = validate_input("Enter width: ")
+height = validate_input("Enter height: ")
+line_no = int(validate_input("Enter the number of lines to draw: "))
 
 # Data output template:
 
