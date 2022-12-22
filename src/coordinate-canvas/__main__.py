@@ -102,7 +102,9 @@ for index in range(line_count):
 
     line, = ax.plot(
         [], [],
-        "-",
+        CONFIG.get("positions").get("shape"),
+        lw=CONFIG.get("positions").get("size") * 2,
+        alpha=CONFIG.get("positions").get("alpha"),
         color=color_cache[-1]
     )
     builder = LineBuilder(line, ax, width, height, color_cache[-1])
