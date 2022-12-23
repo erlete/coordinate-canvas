@@ -56,13 +56,15 @@ class LineBuilder:
             event (matplotlib.backend_bases.MouseEvent): The click event.
         """
 
+        # Correct axes validation:
+
         if event.inaxes != self.line.axes:
             return
 
-        if len(self.x) > 0:
+        if len(self.x) > 0:  # Prevents single-coordinate spline error.
 
             if event.xdata != self.x[-1] or \
-                    event.ydata != self.y[-1]:
+                    event.ydata != self.y[-1]:  # Ignores repeated coordinates.
 
                 self.x.append(event.xdata)
                 self.y.append(event.ydata)
