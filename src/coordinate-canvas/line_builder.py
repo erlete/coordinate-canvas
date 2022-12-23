@@ -59,34 +59,48 @@ class LineBuilder:
         if event.inaxes != self.line.axes:
             return
 
-        self.x.append(event.xdata)
-        self.y.append(event.ydata)
+        if len(self.x) > 0:
 
-        if len(self.x) > 1:
-            sp = Spline([
-                Coordinate(x_, y_)
-                for x_, y_ in zip(self.x, self.y)
-            ], gen_step=min(self.dimensions) / 100)
+            if event.xdata != self.x[-1] or \
+                    event.ydata != self.y[-1]:
 
-            x = [x_ for x_, _ in sp.positions]
-            y = [y_ for _, y_ in sp.positions]
+                self.x.append(event.xdata)
+                self.y.append(event.ydata)
 
-            sp.plot_input(
-                CONFIG.get("input").get("shape"),
-                ms=CONFIG.get("input").get("size"),
-                alpha=CONFIG.get("input").get("alpha"),
-                color=f"dark{self.color}",
-            )
+                if len(self.x) > 1:
+                    sp = Spline([
+                        Coordinate(x_, y_)
+                        for x_, y_ in zip(self.x, self.y)
+                    ], gen_step=min(self.dimensions) / 100)
+
+                    x = [x_ for x_, _ in sp.positions]
+                    y = [y_ for _, y_ in sp.positions]
+
+                    sp.plot_input(
+                        CONFIG.get("input").get("shape"),
+                        ms=CONFIG.get("input").get("size"),
+                        alpha=CONFIG.get("input").get("alpha"),
+                        color=f"dark{self.color}",
+                    )
+
+                    self.line.set_data(x, y)
+                    self.line.figure.canvas.draw()
+
+            else:
+                print(f"Repetated coordinate {event.xdata}, {event.ydata}. "
+                      + "Skipping...")
 
         else:
-            x, y = self.x, self.y
             self.ax.plot(
-                x, y,
+                event.xdata, event.ydata,
                 CONFIG.get("input").get("shape"),
                 lw=CONFIG.get("input").get("size"),
                 alpha=CONFIG.get("input").get("alpha"),
                 color=f"dark{self.color}"
             )
 
-        self.line.set_data(x, y)
-        self.line.figure.canvas.draw()
+            self.x.append(event.xdata)
+            self.y.append(event.ydata)
+
+            self.line.set_data(self.x, self.y)
+            self.line.figure.canvas.draw()
