@@ -22,7 +22,7 @@ from bidimensional import Coordinate
 from bidimensional.functions import Spline
 
 from .config import CONFIG
-from .utils import LineBuilder
+from .line_builder import LineBuilder
 
 
 def validate_input(message: str) -> float:
