@@ -87,8 +87,8 @@ class LineBuilder:
                     self.line.figure.canvas.draw()
 
             else:
-                print(f"Repetated coordinate {event.xdata}, {event.ydata}. "
-                      + "Skipping...")
+                print(f"WARNING: Repetated coordinate {event.xdata}, "
+                      + f"{event.ydata}. Skipping...")
 
         else:
             self.ax.plot(
