@@ -56,7 +56,6 @@ class LineBuilder:
             event (matplotlib.backend_bases.MouseEvent): The click event.
         """
 
-        print(type(event))
         if event.inaxes != self.line.axes:
             return
 
