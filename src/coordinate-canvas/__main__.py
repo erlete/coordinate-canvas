@@ -31,6 +31,27 @@ from .core.line_builder import LineBuilder
 
 COLORS = cycle(COLORS)
 AX = plt.gca()
+FIG = plt.gcf()
+
+
+# Methods' definition:
+
+def decide(event):
+
+    if event.key.isnumeric() and 0 <= int(event.key) < LINE_COUNT:
+        lines[current_data[1]].get("line_builder").disconnect()
+        lines[int(event.key)].get("line_builder").connect()
+
+        current_data[0] = lines[int(event.key)].get("line")
+        current_data[1] = int(event.key)
+
+        AX.set_title(f"Click to add points for line number {current_data[1]}...")
+
+
+def close(event):
+    if event.key == "escape":
+        exit(0)
+
 
 # Parameter input:
 
@@ -44,6 +65,8 @@ if input_data is None:
     )
 
 width, height, line_count = ih.output_format(input_data)
+FIG.canvas.mpl_connect("key_press_event", decide)
+FIG.canvas.mpl_connect("key_release_event", close)
 
 # Data output template:
 
@@ -76,27 +99,9 @@ lines[0].get("line_builder").connect()
 AX.set_title("Click to add points for line number 0...")
 
 
-def decide(event, current_data=current_data):
-
-    if event.key.isnumeric() and 0 <= int(event.key) < line_count:
-        lines[current_data[1]].get("line_builder").disconnect()
-        lines[int(event.key)].get("line_builder").connect()
-
-        current_data[0] = lines[int(event.key)].get("line")
-        current_data[1] = int(event.key)
-
-        print("Setting title...")
-        AX.set_title(f"Click to add points for line number {current_data[1]}...")
-
-
-line.figure.canvas.mpl_connect("key_press_event", decide)
 line, index = current_data
 builder = lines[index].get("line_builder")
 
-plt.gcf().canvas.mpl_connect(
-    "key_release_event",
-    lambda event: [exit(0) if event.key == "escape" else None]
-)
 
 plt.grid(True)
 AX.set_xlim(0, width)
