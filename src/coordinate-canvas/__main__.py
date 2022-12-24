@@ -22,14 +22,14 @@ import matplotlib.pyplot as plt
 from bidimensional import Coordinate
 from bidimensional.functions import Spline
 
-from .core.config import CONFIG
+from .core.config import COLORS, INPUT, POSITIONS
 from .core import input_handler as ih
 from .core.line_builder import LineBuilder
 
 
 # Constants' definition:
 
-COLORS = cycle(CONFIG.get("colors"))
+COLORS = cycle(COLORS)
 
 # Parameter input:
 
@@ -87,16 +87,16 @@ for index in range(line_count):
             )
 
             sp.plot_input(
-                CONFIG.get("input").get("shape"),
-                ms=CONFIG.get("input").get("size"),
-                alpha=CONFIG.get("input").get("alpha"),
+                INPUT.get("shape"),
+                ms=INPUT.get("size"),
+                alpha=INPUT.get("alpha"),
                 color=f"dark{sub_color}",
             )
 
             sp.plot_positions(
-                CONFIG.get("positions").get("shape"),
-                lw=CONFIG.get("positions").get("size"),
-                alpha=CONFIG.get("positions").get("alpha"),
+                POSITIONS.get("shape"),
+                lw=POSITIONS.get("size"),
+                alpha=POSITIONS.get("alpha"),
                 color=sub_color
             )
 
@@ -104,9 +104,9 @@ for index in range(line_count):
 
     line, = ax.plot(
         [], [],
-        CONFIG.get("positions").get("shape"),
-        lw=CONFIG.get("positions").get("size") * 2,  # Highlights the line.
-        alpha=CONFIG.get("positions").get("alpha"),
+        POSITIONS.get("shape"),
+        lw=POSITIONS.get("size") * 2,  # Highlights the line.
+        alpha=POSITIONS.get("alpha"),
         color=color_cache[-1]
     )
     builder = LineBuilder(line, ax, width, height, color_cache[-1])

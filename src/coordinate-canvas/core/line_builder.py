@@ -12,7 +12,7 @@ import matplotlib
 from bidimensional import Coordinate
 from bidimensional.functions import Spline
 
-from .config import CONFIG
+from .config import INPUT
 
 
 class LineBuilder:
@@ -29,8 +29,6 @@ class LineBuilder:
         height (float): The height of the plot.
         color (str): The color of the line.
     """
-
-    CONFIG = CONFIG
 
     def __init__(self, line: matplotlib.lines.Line2D,
                  ax: matplotlib.axes.Axes, width: float,
@@ -79,9 +77,9 @@ class LineBuilder:
                     y = [y_ for _, y_ in sp.positions]
 
                     sp.plot_input(
-                        CONFIG.get("input").get("shape"),
-                        ms=CONFIG.get("input").get("size"),
-                        alpha=CONFIG.get("input").get("alpha"),
+                        INPUT.get("shape"),
+                        ms=INPUT.get("size"),
+                        alpha=INPUT.get("alpha"),
                         color=f"dark{self.color}",
                     )
 
@@ -95,9 +93,9 @@ class LineBuilder:
         else:
             self.ax.plot(
                 event.xdata, event.ydata,
-                CONFIG.get("input").get("shape"),
-                lw=CONFIG.get("input").get("size"),
-                alpha=CONFIG.get("input").get("alpha"),
+                INPUT.get("shape"),
+                lw=INPUT.get("size"),
+                alpha=INPUT.get("alpha"),
                 color=f"dark{self.color}"
             )
 
