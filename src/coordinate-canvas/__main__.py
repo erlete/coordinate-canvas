@@ -30,6 +30,7 @@ from .core.line_builder import LineBuilder
 # Constants' definition:
 
 COLORS = cycle(COLORS)
+AX = plt.gca()
 
 # Parameter input:
 
@@ -56,14 +57,14 @@ data = {
 lines = [
     {
         "color": (color := next(COLORS)),
-        "line": (line := plt.gca().plot(
+        "line": (line := AX.plot(
             [], [],
             POSITIONS.get("shape"),
             lw=POSITIONS.get("size"),
             alpha=POSITIONS.get("alpha"),
             color=color
         )[0]),
-        "line_builder": LineBuilder(line, plt.gca(), width, height, color)
+        "line_builder": LineBuilder(line, AX, width, height, color)
     }
     for _ in range(line_count)
 ]
@@ -72,7 +73,7 @@ lines = [
 
 current_data = [lines[0].get("line"), 0]
 lines[0].get("line_builder").connect()
-plt.gca().set_title("Click to add points for line number 0...")
+AX.set_title("Click to add points for line number 0...")
 
 
 def decide(event, current_data=current_data):
@@ -85,7 +86,7 @@ def decide(event, current_data=current_data):
         current_data[1] = int(event.key)
 
         print("Setting title...")
-        plt.title(f"Click to add points for line number {current_data[1]}...")
+        AX.set_title(f"Click to add points for line number {current_data[1]}...")
 
 
 line.figure.canvas.mpl_connect("key_press_event", decide)
@@ -97,12 +98,9 @@ plt.gcf().canvas.mpl_connect(
     lambda event: [exit(0) if event.key == "escape" else None]
 )
 
-fig = plt.gcf()
-ax = plt.gca()
-
 plt.grid(True)
-ax.set_xlim(0, width)
-ax.set_ylim(0, height)
+AX.set_xlim(0, width)
+AX.set_ylim(0, height)
 
 plt.show()
 
