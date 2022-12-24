@@ -22,9 +22,9 @@ import matplotlib.pyplot as plt
 from bidimensional import Coordinate
 from bidimensional.functions import Spline
 
-from .config import CONFIG
+from .core.config import CONFIG
 from .core import input_handler as ih
-from .line_builder import LineBuilder
+from .core.line_builder import LineBuilder
 
 
 # Constants' definition:
