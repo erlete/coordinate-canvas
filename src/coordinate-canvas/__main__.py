@@ -73,32 +73,34 @@ for index in range(line_count):
         for i in range(index):
             sub_color = color_cache[i]
 
-            coordinates = [
-                Coordinate(x_, y_)
-                for x_, y_ in zip(
-                    data[f"line_{i + 1}"]['x'],
-                    data[f"line_{i + 1}"]['y']
+            if len(data[f"line_{i + 1}"]['x']) > 1:
+
+                coordinates = [
+                    Coordinate(x_, y_)
+                    for x_, y_ in zip(
+                        data[f"line_{i + 1}"]['x'],
+                        data[f"line_{i + 1}"]['y']
+                    )
+                ]
+
+                sp = Spline(
+                    coordinates,
+                    gen_step=min(width, height) / 1000
                 )
-            ]
 
-            sp = Spline(
-                coordinates,
-                gen_step=min(width, height) / 1000
-            )
+                sp.plot_input(
+                    INPUT.get("shape"),
+                    ms=INPUT.get("size"),
+                    alpha=INPUT.get("alpha"),
+                    color=f"dark{sub_color}",
+                )
 
-            sp.plot_input(
-                INPUT.get("shape"),
-                ms=INPUT.get("size"),
-                alpha=INPUT.get("alpha"),
-                color=f"dark{sub_color}",
-            )
-
-            sp.plot_positions(
-                POSITIONS.get("shape"),
-                lw=POSITIONS.get("size"),
-                alpha=POSITIONS.get("alpha"),
-                color=sub_color
-            )
+                sp.plot_positions(
+                    POSITIONS.get("shape"),
+                    lw=POSITIONS.get("size"),
+                    alpha=POSITIONS.get("alpha"),
+                    color=sub_color
+                )
 
     # Line drawing and display:
 
