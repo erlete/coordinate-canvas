@@ -15,6 +15,7 @@ Author:
 
 
 import json
+import sys
 from itertools import cycle
 
 import matplotlib.pyplot as plt
@@ -22,31 +23,8 @@ from bidimensional import Coordinate
 from bidimensional.functions import Spline
 
 from .config import CONFIG
+from .core import input_handler as ih
 from .line_builder import LineBuilder
-
-
-def validate_input(message: str) -> float:
-    """Input validation method.
-
-    This method validates a given input. If the input is not numeric, then a
-    ValueError is raised.
-
-    Args:
-        message (str): The message to be displayed to the user.
-
-    Raises:
-        ValueError: If the input is not numeric.
-
-    Returns:
-        float: The validated input.
-    """
-
-    value = input(message)
-
-    if not value.isnumeric():
-        raise ValueError("the input value must be numeric")
-
-    return float(value)
 
 
 # Constants' definition:
@@ -55,9 +33,16 @@ COLORS = cycle(CONFIG.get("colors"))
 
 # Parameter input:
 
-width = validate_input("Enter width: ")
-height = validate_input("Enter height: ")
-line_count = int(validate_input("Enter the number of lines to draw: "))
+input_data = ih.cli_input(sys.argv)
+
+if input_data is None:
+    input_data = (
+        ih.python_input("Width: "),
+        ih.python_input("Height: "),
+        ih.python_input("Number of lines to draw: ")
+    )
+
+width, height, line_count = ih.output_format(input_data)
 
 # Data output template:
 
