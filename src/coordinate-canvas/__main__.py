@@ -64,9 +64,16 @@ if input_data is None:
         ih.python_input("Number of lines to draw: ")
     )
 
-width, height, line_count = ih.output_format(input_data)
+WIDTH, HEIGHT, LINE_COUNT = ih.output_format(input_data)
+
+# Constants' configuration:
+
 FIG.canvas.mpl_connect("key_press_event", decide)
 FIG.canvas.mpl_connect("key_release_event", close)
+
+plt.grid(True)
+AX.set_xlim(0, WIDTH)
+AX.set_ylim(0, HEIGHT)
 
 # Data output template:
 
@@ -74,7 +81,7 @@ data = {
     f"line_{index + 1}": {
         "x": [],
         "y": []
-    } for index in range(line_count)
+    } for index in range(LINE_COUNT)
 }
 
 lines = [
@@ -87,9 +94,9 @@ lines = [
             alpha=POSITIONS.get("alpha"),
             color=color
         )[0]),
-        "line_builder": LineBuilder(line, AX, width, height, color)
+        "line_builder": LineBuilder(line, AX, WIDTH, HEIGHT, color)
     }
-    for _ in range(line_count)
+    for _ in range(LINE_COUNT)
 ]
 
 # Initial connection and setting:
@@ -98,20 +105,11 @@ current_data = [lines[0].get("line"), 0]
 lines[0].get("line_builder").connect()
 AX.set_title("Click to add points for line number 0...")
 
-
-line, index = current_data
-builder = lines[index].get("line_builder")
-
-
-plt.grid(True)
-AX.set_xlim(0, width)
-AX.set_ylim(0, height)
-
 plt.show()
 
 # Data storage:
 
-for index in range(line_count):
+for index in range(LINE_COUNT):
     data[f"line_{index + 1}"]['x'].extend(lines[index].get("line_builder").x)
     data[f"line_{index + 1}"]['y'].extend(lines[index].get("line_builder").y)
 
