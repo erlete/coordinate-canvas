@@ -53,72 +53,64 @@ data = {
     } for index in range(line_count)
 }
 
-# Main loop:
+lines = [
+    {
+        "color": (color := next(COLORS)),
+        "line": (line := plt.gca().plot(
+            [], [],
+            POSITIONS.get("shape"),
+            lw=POSITIONS.get("size"),
+            alpha=POSITIONS.get("alpha"),
+            color=color
+        )[0]),
+        "line_builder": LineBuilder(line, plt.gca(), width, height, color)
+    }
+    for _ in range(line_count)
+]
 
-color_cache = []
+# Initial connection and setting:
+
+current_data = [lines[0].get("line"), 0]
+lines[0].get("line_builder").connect()
+plt.gca().set_title("Click to add points for line number 0...")
+
+
+def decide(event, current_data=current_data):
+
+    if event.key.isnumeric() and 0 <= int(event.key) < line_count:
+        lines[current_data[1]].get("line_builder").disconnect()
+        lines[int(event.key)].get("line_builder").connect()
+
+        current_data[0] = lines[int(event.key)].get("line")
+        current_data[1] = int(event.key)
+
+        print("Setting title...")
+        plt.title(f"Click to add points for line number {current_data[1]}...")
+
+
+line.figure.canvas.mpl_connect("key_press_event", decide)
+line, index = current_data
+builder = lines[index].get("line_builder")
+
+plt.gcf().canvas.mpl_connect(
+    "key_release_event",
+    lambda event: [exit(0) if event.key == "escape" else None]
+)
+
+fig = plt.gcf()
+ax = plt.gca()
+
+plt.grid(True)
+ax.set_xlim(0, width)
+ax.set_ylim(0, height)
+
+plt.show()
+
+# Data storage:
+
 for index in range(line_count):
-    color_cache.append(next(COLORS))
-
-    # Figure setup:
-
-    fig, ax = plt.subplots()
-    plt.grid(True)
-    ax.set_xlim(0, width)
-    ax.set_ylim(0, height)
-    ax.set_title(f"Click to add points for line number {index + 1}...")
-
-    # Previous drawings' plotting:
-
-    if index > 0:
-        for i in range(index):
-            sub_color = color_cache[i]
-
-            if len(data[f"line_{i + 1}"]['x']) > 1:
-
-                coordinates = [
-                    Coordinate(x_, y_)
-                    for x_, y_ in zip(
-                        data[f"line_{i + 1}"]['x'],
-                        data[f"line_{i + 1}"]['y']
-                    )
-                ]
-
-                sp = Spline(
-                    coordinates,
-                    gen_step=min(width, height) / 1000
-                )
-
-                sp.plot_input(
-                    INPUT.get("shape"),
-                    ms=INPUT.get("size"),
-                    alpha=INPUT.get("alpha"),
-                    color=f"dark{sub_color}",
-                )
-
-                sp.plot_positions(
-                    POSITIONS.get("shape"),
-                    lw=POSITIONS.get("size"),
-                    alpha=POSITIONS.get("alpha"),
-                    color=sub_color
-                )
-
-    # Line drawing and display:
-
-    line, = ax.plot(
-        [], [],
-        POSITIONS.get("shape"),
-        lw=POSITIONS.get("size") * 2,  # Highlights the line.
-        alpha=POSITIONS.get("alpha"),
-        color=color_cache[-1]
-    )
-    builder = LineBuilder(line, ax, width, height, color_cache[-1])
-
-    plt.show()
-
-    # Data storage:
-
-    data[f"line_{index + 1}"]['x'].extend(builder.x)
-    data[f"line_{index + 1}"]['y'].extend(builder.y)
+    data[f"line_{index + 1}"]['x'].extend(lines[index].get("line_builder").x)
+    data[f"line_{index + 1}"]['y'].extend(lines[index].get("line_builder").y)
 
 # Data output:
 
