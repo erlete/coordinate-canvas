@@ -45,7 +45,10 @@ def decide(event):
         current_data[0] = lines[int(event.key)].get("line")
         current_data[1] = int(event.key)
 
-        AX.set_title(f"Click to add points for line number {current_data[1]}...")
+        FIG.suptitle(
+            f"Click to add points for line number {current_data[1]}...",
+            fontsize="large", fontweight="bold"
+        )
 
 
 def close(event):
@@ -103,7 +106,10 @@ lines = [
 
 current_data = [lines[0].get("line"), 0]
 lines[0].get("line_builder").connect()
-AX.set_title("Click to add points for line number 0...")
+FIG.suptitle("Click to add points for line number 0...",
+             fontsize="large", fontweight="bold")
+AX.set_title(f"Press keys 0 - {LINE_COUNT - 1} to change lines or ESC to exit",
+             fontsize="medium", fontstyle="italic")
 
 plt.show()
 
