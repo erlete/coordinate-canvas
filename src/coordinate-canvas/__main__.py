@@ -15,123 +15,107 @@ Author:
 
 
 import json
+import sys
 from itertools import cycle
 
 import matplotlib.pyplot as plt
-from bidimensional import Coordinate
-from bidimensional.functions import Spline
 
-from .config import CONFIG
-from .line_builder import LineBuilder
-
-
-def validate_input(message: str) -> float:
-    """Input validation method.
-
-    This method validates a given input. If the input is not numeric, then a
-    ValueError is raised.
-
-    Args:
-        message (str): The message to be displayed to the user.
-
-    Raises:
-        ValueError: If the input is not numeric.
-
-    Returns:
-        float: The validated input.
-    """
-
-    value = input(message)
-
-    if not value.isnumeric():
-        raise ValueError("the input value must be numeric")
-
-    return float(value)
+from .core.config import COLORS, POSITIONS
+from .core import input_handler as ih
+from .core.line_builder import LineBuilder
 
 
 # Constants' definition:
 
-COLORS = cycle(CONFIG.get("colors"))
+COLORS = cycle(COLORS)
+AX = plt.gca()
+FIG = plt.gcf()
+
+
+# Methods' definition:
+
+def decide(event):
+
+    if event.key.isnumeric() and 1 <= int(event.key) <= LINE_COUNT:
+        lines[current_data[1]].get("line_builder").disconnect()
+        lines[int(event.key) - 1].get("line_builder").connect()
+
+        current_data[0] = lines[int(event.key) - 1].get("line")
+        current_data[1] = int(event.key) - 1
+
+        FIG.suptitle(
+            f"Click to add points for line number {current_data[1] + 1}...",
+            fontsize="large", fontweight="bold"
+        )
+
+
+def close(event):
+    if event.key == "escape":
+        exit(0)
+
 
 # Parameter input:
 
-width = validate_input("Enter width: ")
-height = validate_input("Enter height: ")
-line_count = int(validate_input("Enter the number of lines to draw: "))
+input_data = ih.cli_input(sys.argv)
+
+if input_data is None:
+    input_data = (
+        ih.python_input("Width: "),
+        ih.python_input("Height: "),
+        ih.python_input("Number of lines to draw: ")
+    )
+
+WIDTH, HEIGHT, LINE_COUNT = ih.output_format(input_data)
+
+# Constants' configuration:
+
+FIG.canvas.mpl_connect("key_press_event", decide)
+FIG.canvas.mpl_connect("key_release_event", close)
+
+plt.grid(True)
+AX.set_xlim(0, WIDTH)
+AX.set_ylim(0, HEIGHT)
 
 # Data output template:
 
 data = {
-    f"line_{index + 1}": {
+    f"line_{index}": {
         "x": [],
         "y": []
-    } for index in range(line_count)
+    } for index in range(1, LINE_COUNT + 1)
 }
 
-# Main loop:
+lines = [
+    {
+        "color": (color := next(COLORS)),
+        "line": (line := AX.plot(
+            [], [],
+            POSITIONS.get("shape"),
+            lw=POSITIONS.get("size"),
+            alpha=POSITIONS.get("alpha"),
+            color=color
+        )[0]),
+        "line_builder": LineBuilder(line, AX, WIDTH, HEIGHT, color)
+    }
+    for _ in range(LINE_COUNT)
+]
 
-color_cache = []
-for index in range(line_count):
-    color_cache.append(next(COLORS))
+# Initial connection and setting:
 
-    # Figure setup:
+current_data = [lines[0].get("line"), 0]
+lines[0].get("line_builder").connect()
+FIG.suptitle("Click to add points for line number 1...",
+             fontsize="large", fontweight="bold")
+AX.set_title(f"Press keys 1 - {LINE_COUNT} to change lines or ESC to exit",
+             fontsize="medium", fontstyle="italic")
 
-    fig, ax = plt.subplots()
-    plt.grid(True)
-    ax.set_xlim(0, width)
-    ax.set_ylim(0, height)
-    ax.set_title(f"Click to add points for line number {index + 1}...")
+plt.show()
 
-    # Previous drawings' plotting:
+# Data storage:
 
-    if index > 0:
-        for i in range(index):
-            sub_color = color_cache[i]
-
-            coordinates = [
-                Coordinate(x_, y_)
-                for x_, y_ in zip(
-                    data[f"line_{i + 1}"]['x'],
-                    data[f"line_{i + 1}"]['y']
-                )
-            ]
-
-            sp = Spline(
-                coordinates,
-                gen_step=min(width, height) / 1000
-            )
-
-            sp.plot_input(
-                CONFIG.get("input").get("shape"),
-                ms=CONFIG.get("input").get("size"),
-                alpha=CONFIG.get("input").get("alpha"),
-                color=f"dark{sub_color}",
-            )
-
-            sp.plot_positions(
-                CONFIG.get("positions").get("shape"),
-                lw=CONFIG.get("positions").get("size"),
-                alpha=CONFIG.get("positions").get("alpha"),
-                color=sub_color
-            )
-
-    # Line drawing and display:
-
-    line, = ax.plot(
-        [], [],
-        CONFIG.get("positions").get("shape"),
-        lw=CONFIG.get("positions").get("size") * 2,  # Highlights the line.
-        alpha=CONFIG.get("positions").get("alpha"),
-        color=color_cache[-1]
-    )
-    builder = LineBuilder(line, ax, width, height, color_cache[-1])
-
-    plt.show()
-
-    # Data storage:
-
-    data[f"line_{index + 1}"]['x'].extend(builder.x)
-    data[f"line_{index + 1}"]['y'].extend(builder.y)
+for index in range(LINE_COUNT):
+    data[f"line_{index + 1}"]['x'].extend(lines[index].get("line_builder").x)
+    data[f"line_{index + 1}"]['y'].extend(lines[index].get("line_builder").y)
 
 # Data output:
 

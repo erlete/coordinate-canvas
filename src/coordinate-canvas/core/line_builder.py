@@ -12,7 +12,7 @@ import matplotlib
 from bidimensional import Coordinate
 from bidimensional.functions import Spline
 
-from .config import CONFIG
+from .config import INPUT
 
 
 class LineBuilder:
@@ -30,8 +30,6 @@ class LineBuilder:
         color (str): The color of the line.
     """
 
-    CONFIG = CONFIG
-
     def __init__(self, line: matplotlib.lines.Line2D,
                  ax: matplotlib.axes.Axes, width: float,
                  height: float, color: str) -> None:
@@ -42,9 +40,37 @@ class LineBuilder:
         self.color = color
 
         self.x, self.y = list(line.get_xdata()), list(line.get_ydata())
-
-        self.cid = line.figure.canvas.mpl_connect("button_press_event", self)
+        self.cid = None
         self.line.figure.canvas.draw()
+
+    def is_connected(self) -> bool:
+        """Checks if the line builder is connected.
+
+        This method checks if the line builder is connected to the matplotlib
+        plot.
+
+        Returns:
+            bool: True if the line builder is connected, False otherwise.
+        """
+
+        return self.cid is not None
+
+    def connect(self) -> None:
+        """Connects the line builder.
+
+        This method connects the line builder to the matplotlib plot.
+        """
+
+        self.cid = self.line.figure.canvas.mpl_connect("button_press_event",
+                                                       self)
+
+    def disconnect(self) -> None:
+        """Disconnects the line builder.
+
+        This method disconnects the line builder from the matplotlib plot.
+        """
+
+        self.line.figure.canvas.mpl_disconnect(self.cid)
 
     def __call__(self, event: matplotlib.backend_bases.MouseEvent) -> None:
         """Click event handler.
@@ -79,9 +105,9 @@ class LineBuilder:
                     y = [y_ for _, y_ in sp.positions]
 
                     sp.plot_input(
-                        CONFIG.get("input").get("shape"),
-                        ms=CONFIG.get("input").get("size"),
-                        alpha=CONFIG.get("input").get("alpha"),
+                        INPUT.get("shape"),
+                        ms=INPUT.get("size"),
+                        alpha=INPUT.get("alpha"),
                         color=f"dark{self.color}",
                     )
 
@@ -95,9 +121,9 @@ class LineBuilder:
         else:
             self.ax.plot(
                 event.xdata, event.ydata,
-                CONFIG.get("input").get("shape"),
-                lw=CONFIG.get("input").get("size"),
-                alpha=CONFIG.get("input").get("alpha"),
+                INPUT.get("shape"),
+                lw=INPUT.get("size"),
+                alpha=INPUT.get("alpha"),
                 color=f"dark{self.color}"
             )
 
