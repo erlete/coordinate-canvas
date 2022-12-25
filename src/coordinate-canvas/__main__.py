@@ -19,10 +19,8 @@ import sys
 from itertools import cycle
 
 import matplotlib.pyplot as plt
-from bidimensional import Coordinate
-from bidimensional.functions import Spline
 
-from .core.config import COLORS, INPUT, POSITIONS
+from .core.config import COLORS, POSITIONS
 from .core import input_handler as ih
 from .core.line_builder import LineBuilder
 
