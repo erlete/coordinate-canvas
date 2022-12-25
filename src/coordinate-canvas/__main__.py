@@ -36,15 +36,15 @@ FIG = plt.gcf()
 
 def decide(event):
 
-    if event.key.isnumeric() and 0 <= int(event.key) < LINE_COUNT:
+    if event.key.isnumeric() and 1 <= int(event.key) <= LINE_COUNT:
         lines[current_data[1]].get("line_builder").disconnect()
-        lines[int(event.key)].get("line_builder").connect()
+        lines[int(event.key) - 1].get("line_builder").connect()
 
-        current_data[0] = lines[int(event.key)].get("line")
-        current_data[1] = int(event.key)
+        current_data[0] = lines[int(event.key) - 1].get("line")
+        current_data[1] = int(event.key) - 1
 
         FIG.suptitle(
-            f"Click to add points for line number {current_data[1]}...",
+            f"Click to add points for line number {current_data[1] + 1}...",
             fontsize="large", fontweight="bold"
         )
 
@@ -79,10 +79,10 @@ AX.set_ylim(0, HEIGHT)
 # Data output template:
 
 data = {
-    f"line_{index + 1}": {
+    f"line_{index}": {
         "x": [],
         "y": []
-    } for index in range(LINE_COUNT)
+    } for index in range(1, LINE_COUNT + 1)
 }
 
 lines = [
@@ -104,9 +104,9 @@ lines = [
 
 current_data = [lines[0].get("line"), 0]
 lines[0].get("line_builder").connect()
-FIG.suptitle("Click to add points for line number 0...",
+FIG.suptitle("Click to add points for line number 1...",
              fontsize="large", fontweight="bold")
-AX.set_title(f"Press keys 0 - {LINE_COUNT - 1} to change lines or ESC to exit",
+AX.set_title(f"Press keys 1 - {LINE_COUNT} to change lines or ESC to exit",
              fontsize="medium", fontstyle="italic")
 
 plt.show()
