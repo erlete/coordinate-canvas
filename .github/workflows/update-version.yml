@@ -33,5 +33,5 @@ jobs:
     - name: Commit and push pyproject.toml modifications
       run: |
         version=${{github.ref}}
-        git commit pyproject.toml -m "Update version to ${version#refs/tags/v}"
-        git push origin HEAD:main
+        git commit pyproject.toml -m "Bump version to ${version#refs/tags/v}"
+        git push --force origin HEAD:stable

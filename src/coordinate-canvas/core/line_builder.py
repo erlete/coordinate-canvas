@@ -40,9 +40,37 @@ class LineBuilder:
         self.color = color
 
         self.x, self.y = list(line.get_xdata()), list(line.get_ydata())
-
-        self.cid = line.figure.canvas.mpl_connect("button_press_event", self)
+        self.cid = None
         self.line.figure.canvas.draw()
+
+    def is_connected(self) -> bool:
+        """Checks if the line builder is connected.
+
+        This method checks if the line builder is connected to the matplotlib
+        plot.
+
+        Returns:
+            bool: True if the line builder is connected, False otherwise.
+        """
+
+        return self.cid is not None
+
+    def connect(self) -> None:
+        """Connects the line builder.
+
+        This method connects the line builder to the matplotlib plot.
+        """
+
+        self.cid = self.line.figure.canvas.mpl_connect("button_press_event",
+                                                       self)
+
+    def disconnect(self) -> None:
+        """Disconnects the line builder.
+
+        This method disconnects the line builder from the matplotlib plot.
+        """
+
+        self.line.figure.canvas.mpl_disconnect(self.cid)
 
     def __call__(self, event: matplotlib.backend_bases.MouseEvent) -> None:
         """Click event handler.
