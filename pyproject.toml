@@ -12,7 +12,7 @@ authors = [
 ]
 description = "A matplotlib-based canvas that allows line drawing and coordinate retrieval."
 readme = "README.md"
-requires-python = ">=3.8.16"
+requires-python = ">=3.8.10"
 classifiers = [
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
