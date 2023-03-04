@@ -1,4 +1,6 @@
-"""Input handling module.
+"""
+Input handling module.
+----------------------
 
 This module contains all methods needed to handle the input of the package.
 It is mean to be used internally by the package and not by the user, since
@@ -23,8 +25,10 @@ def output_format(values: tuple[str]) -> tuple[float, float, int] | None:
     The method is meant to be used in combination with the `cli_input`
     and the `python_input` methods.
 
-    Args:
-        values (tuple): The input values.
+    Parameter:
+    ----------
+        values : tuple
+            The input values.
 
     Raises:
         ValueError: If the input does not have at least 3 values.
@@ -51,8 +55,10 @@ def cli_input(arguments: list[str]) -> tuple[str, str, str] | None:
     the arguments is not numeric, then None is returned. Otherwise, the
     raw input values are returned.
 
-    Args:
-        arguments (list[str]): The list of arguments from `sys.argv`.
+    Parameters:
+    -----------
+        arguments : list[str]
+            The list of arguments from `sys.argv`.
 
     Returns:
         tuple[str, str, str] | None: The raw input values or None.
@@ -78,14 +84,19 @@ def python_input(message: str) -> str:
     is not numeric, then a ValueError is raised. Otherwise, the input is
     returned.
 
-    Args:
-        message (str): The message to be displayed to the user.
+    Parameters:
+    -----------
+        message : str
+            The message to be displayed to the user.
 
     Raises:
+    -------
         ValueError: If the input is not numeric.
 
     Returns:
-        str: The validated input or None.
+    --------
+        value : str
+            The validated input or None.
     """
 
     value = input(message)
