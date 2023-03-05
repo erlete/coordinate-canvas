@@ -10,11 +10,25 @@ Author:
     Paulo Sanchez (@erlete)
 """
 
+import sys
+
+# On Python 3.8 and earlier, the name of the collection type is
+# capitalized, and the type is imported from the 'typing' module
+
+if sys.version_info >= (3, 10):
+    ValuesTypeReturn = tuple[float, float, int]
+    ValuesType = tuple[str]
+else:
+    from typing import Tuple
+    ValuesTypeReturn = Tuple[float, float, int]
+    ValuesType = Tuple[str, ...]
+
+
 
 import re
 
 
-def output_format(values: tuple[str]) -> tuple[float, float, int] | None:
+def output_format(values: ValuesType) -> ValuesTypeReturn | None:
     """Formats the output of the input.
 
     This method receives a tuple of strings and validates them. If the
