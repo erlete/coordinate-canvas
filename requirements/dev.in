@@ -1,0 +1,8 @@
+-r coverage.in
+-r docs.in
+-r coordinate-canvas.in
+-r tests.in
+-r styles.in
+tox
+pip-tools
+black

@@ -1,4 +1,6 @@
-"""LineBuilder container class.
+"""
+LineBuilder container class.
+----------------------------
 
 This module contains the LineBuilder class, which is used to build a line based
 on click events. The line is built by clicking on the matplotlib plot.
@@ -22,12 +24,18 @@ class LineBuilder:
     built by clicking on the matplotlib plot. The coordinates are stored
     in a list of tuples.
 
-    Args:
-        line (matplotlib.lines.Line2D): The line to be built.
-        ax (matplotlib.axes.Axes): The axes where the line is drawn.
-        width (float): The width of the plot.
-        height (float): The height of the plot.
-        color (str): The color of the line.
+    Parameters
+    ----------
+        line : matplotlib.lines.Line2D
+            The line to be built.
+        ax : matplotlib.axes.Axes
+            The axes where the line is drawn.
+        width : float
+            The width of the plot.
+        height : float
+            The height of the plot.
+        color : str
+            The color of the line.
     """
 
     def __init__(self, line: matplotlib.lines.Line2D,
@@ -50,10 +58,12 @@ class LineBuilder:
         plot.
 
         Returns:
-            bool: True if the line builder is connected, False otherwise.
+        --------
+            cid : bool
+                True if the line builder is connected, False otherwise.
         """
-
-        return self.cid is not None
+        cid = self.cid is not None
+        return cid
 
     def connect(self) -> None:
         """Connects the line builder.
@@ -78,8 +88,10 @@ class LineBuilder:
         This method is called on every click event. It adds the coordinates to
         the list of coordinates and updates the line.
 
-        Args:
-            event (matplotlib.backend_bases.MouseEvent): The click event.
+        Parameters:
+        -----------
+            event : matplotlib.backend_bases.MouseEvent
+                The click event.
         """
 
         # Correct axes validation:

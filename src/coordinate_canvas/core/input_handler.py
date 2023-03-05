@@ -1,4 +1,6 @@
-"""Input handling module.
+"""
+Input handling module.
+----------------------
 
 This module contains all methods needed to handle the input of the package.
 It is mean to be used internally by the package and not by the user, since
@@ -8,11 +10,29 @@ Author:
     Paulo Sanchez (@erlete)
 """
 
+import sys
+
+# On Python 3.8 and earlier, the name of the collection type is
+# capitalized, and the type is imported from the 'typing' module
+
+if sys.version_info >= (3, 10):
+    ValuesTypeReturn = tuple[float, float, int]
+    ValuesType = tuple[str]
+    ArgumentsTypeReturn = tuple[str, str, str]
+    ArgumentsType = list[str]
+else:
+    from typing import Tuple, List
+    ValuesTypeReturn = Tuple[float, float, int]
+    ValuesType = Tuple[str, ...]
+    ArgumentsTypeReturn = Tuple[str, str, str]
+    ArgumentsType = List[str]
+
+
 
 import re
 
 
-def output_format(values: tuple[str]) -> tuple[float, float, int] | None:
+def output_format(values: ValuesType) -> "ValuesTypeReturn | None":
     """Formats the output of the input.
 
     This method receives a tuple of strings and validates them. If the
@@ -23,8 +43,10 @@ def output_format(values: tuple[str]) -> tuple[float, float, int] | None:
     The method is meant to be used in combination with the `cli_input`
     and the `python_input` methods.
 
-    Args:
-        values (tuple): The input values.
+    Parameter:
+    ----------
+        values : tuple
+            The input values.
 
     Raises:
         ValueError: If the input does not have at least 3 values.
@@ -43,7 +65,7 @@ def output_format(values: tuple[str]) -> tuple[float, float, int] | None:
     return (float(values[0]), float(values[1]), int(float(values[2])))
 
 
-def cli_input(arguments: list[str]) -> tuple[str, str, str] | None:
+def cli_input(arguments: ArgumentsType) -> "ArgumentsTypeReturn | None":
     """Handles CLI input.
 
     This class receives a list of arguments and validates them. If the
@@ -51,8 +73,10 @@ def cli_input(arguments: list[str]) -> tuple[str, str, str] | None:
     the arguments is not numeric, then None is returned. Otherwise, the
     raw input values are returned.
 
-    Args:
-        arguments (list[str]): The list of arguments from `sys.argv`.
+    Parameters:
+    -----------
+        arguments : list[str]
+            The list of arguments from `sys.argv`.
 
     Returns:
         tuple[str, str, str] | None: The raw input values or None.
@@ -78,14 +102,19 @@ def python_input(message: str) -> str:
     is not numeric, then a ValueError is raised. Otherwise, the input is
     returned.
 
-    Args:
-        message (str): The message to be displayed to the user.
+    Parameters:
+    -----------
+        message : str
+            The message to be displayed to the user.
 
     Raises:
+    -------
         ValueError: If the input is not numeric.
 
     Returns:
-        str: The validated input or None.
+    --------
+        value : str
+            The validated input or None.
     """
 
     value = input(message)

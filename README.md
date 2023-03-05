@@ -10,6 +10,17 @@ _Instructions below assume that your Python interpreter is linked to the `python
 python -m pip install coordinate-canvas
 ```
 
+### Install the development version
+
+In case you’d like to be able to update the package code occasionally with the latest bug fixes and improvements, see the source code, or even make your own changes, you can always clone the code directly from the repository:
+
+```bash
+git clone https://github.com/erlete/coordinate-canvas.git
+cd coordinate-canvas
+pip install -e .
+```
+
+
 ## Configuration
 
 The package allows customization of three parameters:
