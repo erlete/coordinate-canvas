@@ -1,6 +1,6 @@
 # Coordinate Canvas
 
-Interactive canvas that allows you to draw 2D coordinates in a plane and output their corresponding coordinates to a JSON file.
+Interactive canvas that allows you to draw 2D coordinates in a plane and output their corresponding coordinates to a JSON file. If you are planning on contributing to the repository, take a look at the [contribution guidelines](./CONTRIBUTING.md).
 
 ## Installation
 
@@ -25,9 +25,9 @@ pip install -e .
 
 The package allows customization of three parameters:
 
- - **Width (integer or float)**: width of the canvas.
- - **Height (integer or float)**: height of the canvas.
- - **Number of lines (integer)**: amount of lines to draw.
+- **Width (integer or float)**: width of the canvas.
+- **Height (integer or float)**: height of the canvas.
+- **Number of lines (integer)**: amount of lines to draw.
 
 Said parameters are configured upon execution.
 
@@ -48,7 +48,7 @@ After all prompts have been filled accordingly, the canvas will pop up in a sepa
 
 ### Command Line Interface
 
-```
+```bash
 python -m coordinate-canvas <width of the canvas> <height of the canvas> <amount of lines to draw>
 ```
 
