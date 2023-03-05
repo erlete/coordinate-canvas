@@ -24,7 +24,7 @@ else:
     from typing import Tuple, List
     ValuesTypeReturn = Tuple[float, float, int]
     ValuesType = Tuple[str, ...]
-    ArgumentsTypeReturn = tuple[str, str, str]
+    ArgumentsTypeReturn = Tuple[str, str, str]
     ArgumentsType = List[str]
 
 
