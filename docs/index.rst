@@ -6,6 +6,9 @@
 Welcome to coordinate-canvas's documentation!
 =============================================
 
+Interactive canvas that allows you to draw 2D coordinates
+in a plane and output their corresponding coordinates to a JSON file.
+
 .. toctree::
    :maxdepth: 3
    :numbered:

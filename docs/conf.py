@@ -47,6 +47,7 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
 
+"""
 html_theme_options = {
     "github_user": "erlete",
     "github_repo": "coordinate-canvas",
@@ -55,9 +56,12 @@ html_theme_options = {
     "github_type": "star",
     "fixed_sidebar": True,
 }
+"""
 
 autodoc_default_options = {
     "member-order": "bysource",
 }
 
 add_module_names = False
+
+master_doc = 'index'

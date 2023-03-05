@@ -1,5 +1,16 @@
 # Coordinate Canvas
 
+![PyPI](https://img.shields.io/pypi/v/coordinate-canvas)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/coordinate-canvas)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/erlete/coordinate-canvas/ci.yaml)
+[![Documentation Status](https://readthedocs.org/projects/coordinate-canvas/badge/?version=latest)](https://coordinate-canvas.readthedocs.io/en/latest/?badge=latest)
+[![GitHub issues](https://img.shields.io/github/issues/erlete/coordinate-canvas)](https://github.com/erlete/coordinate-canvas/issues)
+[![GitHub forks](https://img.shields.io/github/forks/erlete/coordinate-canvas)](https://github.com/erlete/coordinate-canvas/network)
+[![GitHub stars](https://img.shields.io/github/stars/erlete/coordinate-canvas)](https://github.com/erlete/coordinate-canvas/stargazers)
+[![GitHub license](https://img.shields.io/github/license/erlete/coordinate-canvas)](https://github.com/erlete/coordinate-canvas/blob/main/LICENSE)
+[![GitHub contributors](https://img.shields.io/github/contributors/erlete/coordinate-canvas?color=green)](https://github.com/erlete/coordinate-canvas/graphs/contributors)
+[![black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 Interactive canvas that allows you to draw 2D coordinates in a plane and output their corresponding coordinates to a JSON file. If you are planning on contributing to the repository, take a look at the [contribution guidelines](./CONTRIBUTING.md).
 
 ## Installation
