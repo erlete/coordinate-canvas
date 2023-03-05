@@ -18,17 +18,21 @@ import sys
 if sys.version_info >= (3, 10):
     ValuesTypeReturn = tuple[float, float, int]
     ValuesType = tuple[str]
+    ArgumentsTypeReturn = tuple[str, str, str]
+    ArgumentsType = list[str]
 else:
-    from typing import Tuple
+    from typing import Tuple, List
     ValuesTypeReturn = Tuple[float, float, int]
     ValuesType = Tuple[str, ...]
+    ArgumentsTypeReturn = tuple[str, str, str]
+    ArgumentsType = List[str]
 
 
 
 import re
 
 
-def output_format(values: ValuesType) -> ValuesTypeReturn | None:
+def output_format(values: ValuesType) -> "ValuesTypeReturn | None":
     """Formats the output of the input.
 
     This method receives a tuple of strings and validates them. If the
@@ -61,7 +65,7 @@ def output_format(values: ValuesType) -> ValuesTypeReturn | None:
     return (float(values[0]), float(values[1]), int(float(values[2])))
 
 
-def cli_input(arguments: list[str]) -> tuple[str, str, str] | None:
+def cli_input(arguments: ArgumentsType) -> "ArgumentsTypeReturn | None":
     """Handles CLI input.
 
     This class receives a list of arguments and validates them. If the
