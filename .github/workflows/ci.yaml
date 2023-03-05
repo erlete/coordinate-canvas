@@ -42,4 +42,4 @@ jobs:
       - name: "Invoke sphinx-build to build the HTML docs"
         run: |
           python -m pip install -Ur docs/requirements.txt
-          sphinx-build -W -b html -d ${{ env.TMPDIR }}/doctrees source ${{ env.TMPDIR }}/html
+          sphinx-build -W -b html "./docs" "./docs/_build"
