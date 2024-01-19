@@ -1,18 +1,16 @@
 [build-system]
-requires = [
-    "setuptools>=61.0"
-]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "coordinate-canvas"
 version = "1.4.1"
-authors = [
-    {name = "Paulo Sanchez", email = "dev.szblzpaulo@gmail.com"}
-]
-description = "A matplotlib-based canvas that allows line drawing and coordinate retrieval."
+description = "Matplotlib-based canvas that allows line drawing and coordinate retrieval"
 readme = "README.md"
-requires-python = ">=3.8.10"
+license = { file = "LICENSE" }
+requires-python = ">=3.11.6"
+authors = [{ name = "Paulo Sanchez", email = "dev.szblzpaulo@gmail.com" }]
+maintainers = [{ name = "Paulo Sanchez", email = "dev.szblzpaulo@gmail.com" }]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -24,11 +22,20 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    "Typing :: Typed"
+    "Typing :: Typed",
 ]
-dependencies = [
-    "matplotlib",
-    "bidimensional>=1.9.0"
+
+dependencies = ["matplotlib>=3.8.2", "bidimensional>=1.9.1"]
+
+[project.optional-dependencies]
+test = [
+    "pytest==7.4.3",
+    "pytest-cov==4.1.0",
+    "pytest-html==4.1.1",
+    "pycodestyle==2.11.1",
+    "pydocstyle==6.3.0",
+    "mypy==1.7.0",
+    "flake8==6.1.0",
 ]
 
 [project.urls]
