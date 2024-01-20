@@ -30,6 +30,7 @@ class _CanvasProperties:
         height (int | float): canvas height.
         line_count (int): number of lines to draw on the canvas.
         output_file (str): output file path.
+        input_file (str): input file path.
     """
 
     @property
@@ -116,6 +117,27 @@ class _CanvasProperties:
 
         self._output_file = output_file
 
+    @property
+    def input_file(self) -> str | None:
+        """Get input file path.
+
+        Returns:
+            str | None: input file path or None if not specified.
+        """
+        return self._input_file
+
+    @input_file.setter
+    def input_file(self, input_file: str | None) -> None:
+        """Set input file path.
+
+        Args:
+            input_file (str | None): input file path.
+        """
+        if input_file is not None and not isinstance(input_file, str):
+            raise TypeError("Input file path must be a string or None")
+
+        self._input_file = input_file
+
 
 class Canvas(_CanvasProperties):
     """Canvas class.
@@ -136,7 +158,8 @@ class Canvas(_CanvasProperties):
         width: int | float,
         height: int | float,
         line_count: int,
-        output_file: str
+        output_file: str,
+        input_file: str | None = None
     ) -> None:
         """Initialize a Canvas instance.
 
@@ -150,6 +173,7 @@ class Canvas(_CanvasProperties):
         self.height = height
         self.line_count = line_count
         self.output_file = output_file
+        self.input_file = input_file
 
         self._setup()
 
