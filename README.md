@@ -1,6 +1,12 @@
 # Coordinate Canvas
 
-Interactive canvas that allows you to draw 2D coordinates in a plane and output their corresponding coordinates to a JSON file.
+[![Package Build and Test](https://github.com/erlete/coordinate-canvas/actions/workflows/python-tests.yml/badge.svg)](https://github.com/erlete/coordinate-canvas/actions/workflows/python-tests.yml)
+[![PyPI Release](https://github.com/erlete/coordinate-canvas/actions/workflows/python-publish.yml/badge.svg)](https://github.com/erlete/coordinate-canvas/actions/workflows/python-publish.yml)
+![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Ferlete%2Fcoordinate-canvas%2Fstable%2Fpyproject.toml&logo=python&label=Version)
+![PyPI - Implementation](https://img.shields.io/pypi/implementation/ccanvas?logo=pypi&label=Implementation)
+![PyPI - Wheel](https://img.shields.io/pypi/wheel/ccanvas?logo=pypi&label=Wheel)
+
+Interactive canvas that allows you to draw multiple 2D coordinate lines in a plane and output their corresponding coordinates to a JSON file.
 
 > [!NOTE]
 > All instructions in this README assume your Python 3.11.6+ installation is in your PATH and is aliased under `python`. If this is not the case, you will need to replace `python` with the alias or path that points to the correct Python executable.
@@ -8,7 +14,7 @@ Interactive canvas that allows you to draw 2D coordinates in a plane and output 
 ## Installation
 
 ```bash
-python -m pip install ccanvas  # Use dash instead of underscore!
+python -m pip install ccanvas
 ```
 
 ## Usage
@@ -16,7 +22,7 @@ python -m pip install ccanvas  # Use dash instead of underscore!
 You can display the help message by running the following command:
 
 ```bash
-python -m ccanvas --help  # Use underscore instead of dash!
+python -m ccanvas --help
 ```
 
 Once the canvas has been opened, you will be able to click on any part of it and add a new coordinate. Lines can be switched using the numeric pad on the keyboard, as explained on the header of the window.
