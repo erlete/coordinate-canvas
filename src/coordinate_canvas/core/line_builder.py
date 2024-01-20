@@ -10,6 +10,7 @@ from typing import Any
 import matplotlib
 from bidimensional import Coordinate
 from bidimensional.functions import Spline
+from colorama import Fore, Style
 
 from .. import config as cfg
 
@@ -111,13 +112,18 @@ class LineBuilder:
                     self.line.figure.canvas.draw()
 
             else:
-                print(f"WARNING: Repetated coordinate {event.xdata}, "
-                      + f"{event.ydata}. Skipping...")
+                print(
+                    Fore.YELLOW + Style.BRIGHT
+                    + "[Warning] Skipping repetated coordinate "
+                    + f"({event.xdata}, {event.ydata})"
+                    + Style.RESET_ALL
+                )
 
         else:
             self.ax.plot(
-                event.xdata,
-                event.ydata,
+                # Prevent None values with default empty list:
+                event.xdata or [],
+                event.ydata or [],
                 cfg.Input.SHAPE,
                 lw=cfg.Input.SIZE,
                 alpha=cfg.Input.ALPHA,

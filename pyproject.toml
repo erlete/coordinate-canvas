@@ -25,7 +25,12 @@ classifiers = [
     "Typing :: Typed",
 ]
 
-dependencies = ["matplotlib>=3.8.2", "bidimensional>=1.9.1", "click>=8.1.7"]
+dependencies = [
+    "bidimensional>=1.9.1",
+    "click>=8.1.7",
+    "colorama>=0.4.6",
+    "matplotlib>=3.8.2",
+]
 
 [project.optional-dependencies]
 test = [

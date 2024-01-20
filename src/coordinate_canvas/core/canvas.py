@@ -1,8 +1,10 @@
 import json
+import os
 from itertools import cycle
 from typing import Any
 
 import matplotlib.pyplot as plt
+from colorama import Fore, Style
 
 from .. import config as cfg
 from .line_builder import LineBuilder
@@ -180,7 +182,8 @@ class Canvas(_CanvasProperties):
             self._current_data[1] = int(event.key) - 1
 
             self._fig.suptitle(
-                f"Click to add points for line number {self._current_data[1] + 1}...",
+                "Click to add points for line number"
+                + f" {self._current_data[1] + 1}...",
                 fontsize="large", fontweight="bold"
             )
 
@@ -194,7 +197,17 @@ class Canvas(_CanvasProperties):
                 self._lines[index]["line_builder"].y
             )
 
-        with open(self._output_file, mode="w", encoding="utf-8") as fp:
+        output = self._output_file
+        if not os.path.exists(output):
+            output = cfg.CLI.OUTPUT
+            print(
+                Fore.YELLOW + Style.BRIGHT
+                + f"[Warning] Failed to save data in \"{self._output_file}\"."
+                + f" Saving to \"{output}\" instead..."
+                + Style.RESET_ALL
+            )
+
+        with open(output, mode="w", encoding="utf-8") as fp:
             json.dump(self._data, fp, ensure_ascii=False, indent=4)
 
     def _exit(self, event: Any) -> None:
