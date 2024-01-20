@@ -8,6 +8,7 @@ Author:
 import click
 
 from .. import config as cfg
+from ..core.canvas import Canvas
 
 
 @click.command("coordinate-canvas")
@@ -50,4 +51,4 @@ def cli(width, height, output, line_count):
     if not output.lower().endswith(".json"):
         raise click.BadParameter("Output file must be a JSON file")
 
-    pass  # TODO: Implement core logic here.
+    Canvas(width, height, line_count, output).run()

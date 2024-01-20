@@ -1,6 +1,6 @@
 class Input:
 
-    SHAPE = "0"
+    SHAPE = "o"
     SIZE = 5
     ALPHA = 1
 
@@ -19,7 +19,14 @@ class CLI:
     OUTPUT = "coordinates.json"
 
 
-COLORS = [
-    "red", "green", "salmon", "blue",
-    "orange", "violet", "goldenrod", "gray"
+COLORS = [  # Up to 9 colors (no need for more).
+    "red",
+    "green",
+    "salmon",
+    "blue",
+    "orange",
+    "violet",
+    "goldenrod",
+    "gray",
+    "cyan"
 ]
