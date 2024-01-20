@@ -178,6 +178,7 @@ class Canvas(_CanvasProperties):
         self._current_index: int
         self._input_data: dict[str, dict[str, list[int | float]]]
 
+        self._saved = False  # Flag to check if data has been saved.
         self._setup()
         self._read_input_file()
 
@@ -253,13 +254,15 @@ class Canvas(_CanvasProperties):
             } for index in range(self._line_count)
         }
 
-        output = self._output_file
-        if not os.path.exists(output):
-            output = cfg.CLI.OUTPUT
+        try:
+            with open(self._output_file, mode="w", encoding="utf-8") as fp:
+                json.dump(self._data, fp, ensure_ascii=False, indent=4)
+
+        except FileNotFoundError:
             print(
                 Fore.YELLOW + Style.BRIGHT
                 + f"[Warning] Failed to save data in \"{self._output_file}\"."
-                + f" Saving to \"{output}\" instead..."
+                + f" Saving to \"{cfg.CLI.OUTPUT}\" instead..."
                 + Style.RESET_ALL
             )
 
@@ -280,7 +283,10 @@ class Canvas(_CanvasProperties):
         if hasattr(event, "key") and event.key != "escape":
             return
 
-        self._save()
+        if not self._saved:
+            self._save()
+            self._saved = True
+
         plt.close()
 
     def run(self) -> None:
