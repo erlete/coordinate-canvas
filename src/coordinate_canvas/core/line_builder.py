@@ -1,47 +1,45 @@
-"""
-LineBuilder container class.
-----------------------------
-
-This module contains the LineBuilder class, which is used to build a line based
-on click events. The line is built by clicking on the matplotlib plot.
+"""Line builder module.
 
 Author:
     Paulo Sanchez (@erlete)
 """
 
 
+from typing import Any
+
 import matplotlib
 from bidimensional import Coordinate
 from bidimensional.functions import Spline
+from colorama import Fore, Style
 
-from .config import INPUT
+from .. import config as cfg
 
 
-class LineBuilder:
+class _LineBuilder:
     """Line builder on click events.
 
-    This class is used to build a line based on click events. The line is
-    built by clicking on the matplotlib plot. The coordinates are stored
+    This class is used to build a line based on click events. line is
+    built by clicking on the matplotlib plot. coordinates are stored
     in a list of tuples.
-
-    Parameters
-    ----------
-        line : matplotlib.lines.Line2D
-            The line to be built.
-        ax : matplotlib.axes.Axes
-            The axes where the line is drawn.
-        width : float
-            The width of the plot.
-        height : float
-            The height of the plot.
-        color : str
-            The color of the line.
     """
 
-    def __init__(self, line: matplotlib.lines.Line2D,
-                 ax: matplotlib.axes.Axes, width: float,
-                 height: float, color: str) -> None:
+    def __init__(
+        self,
+        line: Any,
+        ax: matplotlib.axes.Axes,
+        width: float,
+        height: float,
+        color: str
+    ) -> None:
+        """Initialize a LineBuilder instance.
 
+        Args:
+            line (Any): line to be built.
+            ax (matplotlib.axes.Axes): axes where the line is drawn.
+            width (float): width of the plot.
+            height (float): height of the plot.
+            color (str): color of the line.
+        """
         self.line = line
         self.ax = ax
         self.dimensions = (width, height)
@@ -52,34 +50,22 @@ class LineBuilder:
         self.line.figure.canvas.draw()
 
     def is_connected(self) -> bool:
-        """Checks if the line builder is connected.
-
-        This method checks if the line builder is connected to the matplotlib
-        plot.
+        """Check if the line builder is connected.
 
         Returns:
-        --------
-            cid : bool
-                True if the line builder is connected, False otherwise.
+            cid (bool): whether the line builder is connected or not.
         """
-        cid = self.cid is not None
-        return cid
+        return self.cid is not None
 
     def connect(self) -> None:
-        """Connects the line builder.
-
-        This method connects the line builder to the matplotlib plot.
-        """
-
-        self.cid = self.line.figure.canvas.mpl_connect("button_press_event",
-                                                       self)
+        """Connect line builder to matplotlib plot."""
+        self.cid = self.line.figure.canvas.mpl_connect(
+            "button_press_event",
+            self
+        )
 
     def disconnect(self) -> None:
-        """Disconnects the line builder.
-
-        This method disconnects the line builder from the matplotlib plot.
-        """
-
+        """Disconnect line builder from matplotlib plot."""
         self.line.figure.canvas.mpl_disconnect(self.cid)
 
     def __call__(self, event: matplotlib.backend_bases.MouseEvent) -> None:
@@ -88,22 +74,21 @@ class LineBuilder:
         This method is called on every click event. It adds the coordinates to
         the list of coordinates and updates the line.
 
-        Parameters:
-        -----------
-            event : matplotlib.backend_bases.MouseEvent
-                The click event.
+        Args:
+            event (matplotlib.backend_bases.MouseEvent): click event.
         """
-
-        # Correct axes validation:
-
+        # Axes validation:
         if event.inaxes != self.line.axes:
             return
 
-        if len(self.x) > 0:  # Prevents single-coordinate spline error.
+        # Prevent single-coordinate spline error:
+        if len(self.x) > 0:
 
-            if event.xdata != self.x[-1] or \
-                    event.ydata != self.y[-1]:  # Ignores repeated coordinates.
-
+            # Ignore repeated coordinates:
+            if (
+                event.xdata != self.x[-1]
+                or event.ydata != self.y[-1]
+            ):
                 self.x.append(event.xdata)
                 self.y.append(event.ydata)
 
@@ -117,9 +102,9 @@ class LineBuilder:
                     y = [y_ for _, y_ in sp.positions]
 
                     sp.plot_input(
-                        INPUT.get("shape"),
-                        ms=INPUT.get("size"),
-                        alpha=INPUT.get("alpha"),
+                        cfg.Point.SHAPE,
+                        ms=cfg.Point.SIZE,
+                        alpha=cfg.Point.ALPHA,
                         color=f"dark{self.color}",
                     )
 
@@ -127,15 +112,21 @@ class LineBuilder:
                     self.line.figure.canvas.draw()
 
             else:
-                print(f"WARNING: Repetated coordinate {event.xdata}, "
-                      + f"{event.ydata}. Skipping...")
+                print(
+                    Fore.YELLOW + Style.BRIGHT
+                    + "[Warning] Skipping repetated coordinate "
+                    + f"({event.xdata}, {event.ydata})"
+                    + Style.RESET_ALL
+                )
 
         else:
             self.ax.plot(
-                event.xdata, event.ydata,
-                INPUT.get("shape"),
-                lw=INPUT.get("size"),
-                alpha=INPUT.get("alpha"),
+                # Prevent None values with default empty list:
+                event.xdata or [],
+                event.ydata or [],
+                cfg.Point.SHAPE,
+                lw=cfg.Point.SIZE,
+                alpha=cfg.Point.ALPHA,
                 color=f"dark{self.color}"
             )
 

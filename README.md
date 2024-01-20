@@ -1,70 +1,27 @@
 # Coordinate Canvas
 
-Interactive canvas that allows you to draw 2D coordinates in a plane and output their corresponding coordinates to a JSON file. If you are planning on contributing to the repository, take a look at the [contribution guidelines](./CONTRIBUTING.md).
+Interactive canvas that allows you to draw 2D coordinates in a plane and output their corresponding coordinates to a JSON file.
+
+> [!NOTE]
+> All instructions in this README assume your Python 3.11.6+ installation is in your PATH and is aliased under `python`. If this is not the case, you will need to replace `python` with the alias or path that points to the correct Python executable.
 
 ## Installation
-
-_Instructions below assume that your Python interpreter is linked to the `python` alias._
 
 ```bash
 python -m pip install coordinate-canvas
 ```
 
-### Install the development version
-
-In case you’d like to be able to update the package code occasionally with the latest bug fixes and improvements, see the source code, or even make your own changes, you can always clone the code directly from the repository:
-
-```bash
-git clone https://github.com/erlete/coordinate-canvas.git
-cd coordinate-canvas
-pip install -e .
-```
-
-
-## Configuration
-
-The package allows customization of three parameters:
-
-- **Width (integer or float)**: width of the canvas.
-- **Height (integer or float)**: height of the canvas.
-- **Number of lines (integer)**: amount of lines to draw.
-
-Said parameters are configured upon execution.
-
-## Execution
-
-Currently, the package supports two separate execution modes. The first one uses Python built-in prompts, while the other allows parameters to be passed via command line interface:
-
-### Built-in prompts
-
-```python
-python -m coordinate-canvas
->>> Width: <width of the canvas>
->>> Height: <height of the canvas>
->>> Number of lines: <amount of lines to draw>
-```
-
-After all prompts have been filled accordingly, the canvas will pop up in a separate window.
-
-### Command Line Interface
-
-```bash
-python -m coordinate-canvas <width of the canvas> <height of the canvas> <amount of lines to draw>
-```
-
-Again, if all fields have been filled properly, the canvas will open in another window.
-
 ## Usage
+
+You can display the help message by running the following command:
+
+```bash
+python -m coordinate-canvas --help
+```
 
 Once the canvas has been opened, you will be able to click on any part of it and add a new coordinate. Lines can be switched using the numeric pad on the keyboard, as explained on the header of the window.
 
-![Initial screen](./.media/initial_screen.png)
-
-![Line 1](./.media/line_1.png)
-
-![Line 2](./.media/line_2.png)
-
-Once you have added all the desired coordinates, just press the "Escape" key or close the window. A `coordinates.json` file will be generated **in the same directory where the program was executed**. The structure of the JSON file will be as follows:
+Once you have added all the desired coordinates, just press the "Escape" or "Q" keys or close the window. A JSON file will be generated containing all the coordinates you added. This is how the JSON structure looks like:
 
 ```json
 {
@@ -74,28 +31,20 @@ Once you have added all the desired coordinates, just press the "Escape" key or 
             5.510752688172044,
             10.45698924731183,
             14.045698924731184,
-            14.87903225806452
+            ...
         ],
         "y": [
             8.837828837828837,
             13.18015318015318,
             13.126873126873129,
             8.03862803862804,
-            2.3643023643023646
+            ...
         ]
     },
     "line_2": {
-        "x": [
-            5.510752688172044,
-            9.086021505376346,
-            11.841397849462368
-        ],
-        "y": [
-            7.026307026307026,
-            8.971028971028971,
-            3.9893439893439897
-        ]
-    }
+        ...
+    },
+    ...
 }
 ```
 
@@ -111,7 +60,13 @@ import json
 with open("coordinates.json", mode="r", encoding="utf-8") as fp:
     data = json.load(fp)  # Loads all data in a dictionary.
 
+# Ways to retrieve data:
 line_1 = data["line_1"]
 line_1_x = data["line_1"]["x"]
 line_1_y = data["line_1"]["y"]
+line_1_xy = [(x, y) for x, y in zip(data["line_1"].values())]  # Recommended!
 ```
+
+## Contributing
+
+If you are planning on contributing to the repository, take a look at the [contribution guidelines](./CONTRIBUTING.md).
