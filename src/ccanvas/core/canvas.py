@@ -256,7 +256,7 @@ class Canvas(_CanvasProperties):
 
         try:
             with open(self._output_file, mode="w", encoding="utf-8") as fp:
-                json.dump(self._data, fp, ensure_ascii=False, indent=4)
+                json.dump(data, fp, ensure_ascii=False, indent=4)
 
         except FileNotFoundError:
             print(
@@ -266,8 +266,8 @@ class Canvas(_CanvasProperties):
                 + Style.RESET_ALL
             )
 
-        with open(output, mode="w", encoding="utf-8") as fp:
-            json.dump(data, fp, ensure_ascii=False, indent=4)
+            with open(cfg.CLI.OUTPUT, mode="w", encoding="utf-8") as fp:
+                json.dump(data, fp, ensure_ascii=False, indent=4)
 
     def _exit(self, event: Any) -> None:
         """Handle canvas exit events.
