@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from colorama import Fore, Style
 
 from .. import config as cfg
-from .line_builder import LineBuilder
+from .line_builder import _LineBuilder
 
 
 class _CanvasProperties:
@@ -187,7 +187,7 @@ class Canvas(_CanvasProperties):
                     alpha=cfg.Link.ALPHA,
                     color=color
                 )[0]),
-                "line_builder": LineBuilder(
+                "line_builder": _LineBuilder(
                     line,
                     self._ax,
                     self._width,

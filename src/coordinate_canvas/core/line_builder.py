@@ -15,7 +15,7 @@ from colorama import Fore, Style
 from .. import config as cfg
 
 
-class LineBuilder:
+class _LineBuilder:
     """Line builder on click events.
 
     This class is used to build a line based on click events. line is
