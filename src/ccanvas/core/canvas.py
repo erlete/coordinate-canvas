@@ -151,6 +151,7 @@ class Canvas(_CanvasProperties):
         self.line_count = line_count
         self.output_file = output_file
 
+        self._saved = False  # Flag to check if data has been saved.
         self._setup()
 
     def _setup(self) -> None:
@@ -229,18 +230,17 @@ class Canvas(_CanvasProperties):
                 self._lines[index]["line_builder"].y
             )
 
-        output = self._output_file
-        if not os.path.exists(output):
-            output = cfg.CLI.OUTPUT
+        try:
+            with open(self._output_file, mode="w", encoding="utf-8") as fp:
+                json.dump(self._data, fp, ensure_ascii=False, indent=4)
+
+        except FileNotFoundError:
             print(
                 Fore.YELLOW + Style.BRIGHT
                 + f"[Warning] Failed to save data in \"{self._output_file}\"."
-                + f" Saving to \"{output}\" instead..."
+                + f" Saving to \"{cfg.CLI.OUTPUT}\" instead..."
                 + Style.RESET_ALL
             )
-
-        with open(output, mode="w", encoding="utf-8") as fp:
-            json.dump(self._data, fp, ensure_ascii=False, indent=4)
 
     def _exit(self, event: Any) -> None:
         """Handle canvas exit events.
@@ -256,7 +256,10 @@ class Canvas(_CanvasProperties):
         if hasattr(event, "key") and event.key != "escape":
             return
 
-        self._save()
+        if not self._saved:
+            self._save()
+            self._saved = True
+
         plt.close()
 
     def run(self) -> None:
