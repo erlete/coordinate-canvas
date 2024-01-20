@@ -68,7 +68,17 @@ class _LineBuilder:
         """Disconnect line builder from matplotlib plot."""
         self.line.figure.canvas.mpl_disconnect(self.cid)
 
-    def _plot_spline(self, x: Sequence[int | float], y: Sequence[int | float]) -> None:
+    def _plot_spline(
+        self,
+        x: Sequence[int | float],
+        y: Sequence[int | float]
+    ) -> None:
+        """Modify line data to plot a spline.
+
+        Args:
+            x (Sequence[int | float]): x coordinates of the line.
+            y (Sequence[int | float]): y coordinates of the line.
+        """
         if len(x) > 1:
             sp = Spline([
                 Coordinate(x_, y_)
@@ -130,6 +140,18 @@ class _LineBuilder:
 
 
 class Line:
+    """Line representation class.
+
+    This class is used to represent a line with its different components, such
+    as the matplotlib representation, the line builder, etc.
+
+    Attributes:
+        color (str): line color.
+        line (matplotlib.lines.Line2D): matplotlib line.
+        line_builder (_LineBuilder): line builder.
+        COLORS (list[str]): list of valid colors (all of them must support the
+            "dark" prefix).
+    """
 
     COLORS = [
         "red",
@@ -152,6 +174,16 @@ class Line:
         y: list[int | float],
         color: str
     ) -> None:
+        """Initialize a Line instance.
+
+        Args:
+            ax (matplotlib.axes.Axes): axes where the line is drawn.
+            width (float): width of the plot.
+            height (float): height of the plot.
+            x (list[int | float]): x coordinates of the line.
+            y (list[int | float]): y coordinates of the line.
+            color (str): color of the line.
+        """
         self._ax = ax
         self._width = width
         self._height = height
