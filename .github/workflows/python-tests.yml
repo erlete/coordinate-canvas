@@ -50,7 +50,7 @@ jobs:
       run: python -m pip install .[test]
 
     - name: Test with PyTest
-      run: python -m pytest --color=yes --capture=no --cov-config=.coveragerc --cov-report=lcov --cov=src/coordinate_canvas
+      run: python -m pytest --color=yes --capture=no --cov-config=.coveragerc --cov-report=lcov --cov=src/ccanvas
 
     - name: Upload coverage file artifact
       uses: actions/upload-artifact@v3

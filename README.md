@@ -8,7 +8,7 @@ Interactive canvas that allows you to draw 2D coordinates in a plane and output 
 ## Installation
 
 ```bash
-python -m pip install coordinate-canvas  # Use dash instead of underscore!
+python -m pip install ccanvas  # Use dash instead of underscore!
 ```
 
 ## Usage
@@ -16,7 +16,7 @@ python -m pip install coordinate-canvas  # Use dash instead of underscore!
 You can display the help message by running the following command:
 
 ```bash
-python -m coordinate_canvas --help  # Use underscore instead of dash!
+python -m ccanvas --help  # Use underscore instead of dash!
 ```
 
 Once the canvas has been opened, you will be able to click on any part of it and add a new coordinate. Lines can be switched using the numeric pad on the keyboard, as explained on the header of the window.

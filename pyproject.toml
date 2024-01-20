@@ -3,7 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "coordinate-canvas"
+name = "ccanvas"
 version = "1.5.1"
 description = "Matplotlib-based canvas that allows line drawing and coordinate retrieval"
 readme = "README.md"
