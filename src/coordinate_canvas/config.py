@@ -16,6 +16,7 @@ class CLI:
 
     WIDTH = 10
     HEIGHT = 10
+    OUTPUT = "coordinates.json"
 
 
 COLORS = [
