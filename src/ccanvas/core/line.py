@@ -1,4 +1,6 @@
-"""Line builder module.
+"""Line module.
+
+This module contains classes used to represent and build lines.
 
 Author:
     Paulo Sanchez (@erlete)

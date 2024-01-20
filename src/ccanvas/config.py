@@ -45,17 +45,3 @@ class CLI:
     WIDTH = 10
     HEIGHT = 10
     OUTPUT = "coordinates.json"
-
-
-"""Line colors (up to 9 as there is no need for more)."""
-COLORS = [
-    "red",
-    "green",
-    "salmon",
-    "blue",
-    "orange",
-    "violet",
-    "goldenrod",
-    "gray",
-    "cyan"
-]
