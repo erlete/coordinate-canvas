@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from colorama import Fore, Style
 
 from .. import config as cfg
-from .line_builder import _LineBuilder
+from .line_builder import Line, _LineBuilder
 
 
 class _CanvasProperties:
@@ -175,7 +175,26 @@ class Canvas(_CanvasProperties):
         self.output_file = output_file
         self.input_file = input_file
 
+        self._current_index: int
+        self._input_data: dict[str, dict[str, list[int | float]]]
+
         self._setup()
+        self._read_input_file()
+
+    def _read_input_file(self) -> None:
+        """Read input file."""
+        if self._input_file is None:
+            self._input_data = {}
+            return
+
+        with open(self._input_file, mode="r", encoding="utf-8") as fp:
+            data = json.load(fp)
+
+        for index in range(self._line_count):
+            content = data.get(f"line_{index + 1}", {"x": [], "y": []})
+            line_builder = self._lines[index].line_builder
+            line_builder.x, line_builder.y = content.values()
+            line_builder._plot_spline(*content.values())
 
     def _setup(self) -> None:
         """Set up canvas configuration."""
@@ -190,39 +209,19 @@ class Canvas(_CanvasProperties):
         self._fig.canvas.mpl_connect("key_release_event", self._exit)
         self._fig.canvas.mpl_connect("close_event", self._exit)
 
-        plt.grid(True)
-
-        # Data storage setup:
-        self._data: dict[str, dict[str, list[int | float]]] = {
-            f"line_{index}": {
-                "x": [],
-                "y": []
-            } for index in range(1, self._line_count + 1)
-        }
-
-        _colors = cycle(cfg.COLORS)  # Temporary variable for colors.
-        self._lines: list[dict[str, Any]] = [
-            {
-                "color": (color := next(_colors)),
-                "line": (line := self._ax.plot(
-                    [], [],
-                    cfg.Link.SHAPE,
-                    lw=cfg.Link.SIZE,
-                    alpha=cfg.Link.ALPHA,
-                    color=color
-                )[0]),
-                "line_builder": _LineBuilder(
-                    line,
-                    self._ax,
-                    self._width,
-                    self._height,
-                    color
-                )
-            }
+        # Line storage setup:
+        _colors = cycle(Line.COLORS)
+        self._lines = [
+            Line(
+                self._ax,
+                self._width,
+                self._height,
+                [],
+                [],
+                next(_colors)
+            )
             for _ in range(self._line_count)
         ]
-
-        self._current_data: list[Any] = [self._lines[0]["line"], 0]
 
     def _select_line(self, event: Any) -> None:
         """Select a line to draw on.
@@ -231,27 +230,28 @@ class Canvas(_CanvasProperties):
             event (Any): matplotlib event object.
         """
         if event.key.isnumeric() and 1 <= int(event.key) <= self.line_count:
-            self._lines[self._current_data[1]]["line_builder"].disconnect()
-            self._lines[int(event.key) - 1]["line_builder"].connect()
+            line_index = int(event.key) - 1
 
-            self._current_data[0] = self._lines[int(event.key) - 1].get("line")
-            self._current_data[1] = int(event.key) - 1
+            # Disconnect current line and connect the selected one:
+            self._lines[self._current_index].line_builder.disconnect()
+            self._lines[line_index].line_builder.connect()
+            self._current_index = line_index
 
+            # Update plot title:
             self._fig.suptitle(
                 "Click to add points for line number"
-                + f" {self._current_data[1] + 1}...",
+                + f" {self._current_index + 1}...",
                 fontsize="large", fontweight="bold"
             )
 
     def _save(self) -> None:
         """Save data to JSON file."""
-        for index in range(self._line_count):
-            self._data[f"line_{index + 1}"]["x"].extend(
-                self._lines[index]["line_builder"].x
-            )
-            self._data[f"line_{index + 1}"]["y"].extend(
-                self._lines[index]["line_builder"].y
-            )
+        data: dict[str, dict[str, list[int | float]]] = {
+            f"line_{index + 1}": {
+                "x": self._lines[index].line_builder.x,
+                "y": self._lines[index].line_builder.y
+            } for index in range(self._line_count)
+        }
 
         output = self._output_file
         if not os.path.exists(output):
@@ -264,7 +264,7 @@ class Canvas(_CanvasProperties):
             )
 
         with open(output, mode="w", encoding="utf-8") as fp:
-            json.dump(self._data, fp, ensure_ascii=False, indent=4)
+            json.dump(data, fp, ensure_ascii=False, indent=4)
 
     def _exit(self, event: Any) -> None:
         """Handle canvas exit events.
@@ -285,20 +285,26 @@ class Canvas(_CanvasProperties):
 
     def run(self) -> None:
         """Execute canvas functionality."""
-        self._lines[0]["line_builder"].connect()
+        # Initial line selection:
+        self._current_index = 0
+        self._lines[self._current_index].line_builder.connect()
 
+        # Initial plot titles:
         self._fig.suptitle(
-            "Click to add coordinates for the current line",
+            "Click to add points for line number"
+            + f" {self._current_index + 1}...",
             fontsize="large",
             fontweight="bold"
         )
         self._ax.set_title(
-            (
-                f"Press keys 1 to {self._line_count} to switch lines"
-                + "\nClose the window, press ESC or Q to save and exit"
-            ),
+            f"Press keys 1 to {self._line_count} to switch lines"
+            + "\nClose the window, press ESC or Q to save and exit",
             fontsize="medium",
             fontstyle="italic"
         )
 
+        # Full screen display:
+        mng = plt.get_current_fig_manager()
+        mng.full_screen_toggle()  # type: ignore
+        plt.grid(True)
         plt.show()
