@@ -5,7 +5,7 @@ Author:
 """
 
 
-from typing import Any
+from typing import Any, Sequence
 
 import matplotlib
 from bidimensional import Coordinate
@@ -68,6 +68,35 @@ class _LineBuilder:
         """Disconnect line builder from matplotlib plot."""
         self.line.figure.canvas.mpl_disconnect(self.cid)
 
+    def _plot_spline(self, x: Sequence[int | float], y: Sequence[int | float]) -> None:
+        if len(x) > 1:
+            sp = Spline([
+                Coordinate(x_, y_)
+                for x_, y_ in zip(x, y)
+            ], gen_step=min(self.dimensions) / 100)
+
+            x, y = zip(*sp.positions)
+
+            sp.plot_input(
+                cfg.Point.SHAPE,
+                ms=cfg.Point.SIZE,
+                alpha=cfg.Point.ALPHA,
+                color=f"dark{self.color}",
+            )
+
+        elif len(x) == 1:
+            self.ax.plot(
+                x,
+                y,
+                cfg.Point.SHAPE,
+                lw=cfg.Point.SIZE,
+                alpha=cfg.Point.ALPHA,
+                color=f"dark{self.color}"
+            )
+
+        self.line.set_data(x, y)
+        self.line.figure.canvas.draw()
+
     def __call__(self, event: matplotlib.backend_bases.MouseEvent) -> None:
         """Click event handler.
 
@@ -81,57 +110,118 @@ class _LineBuilder:
         if event.inaxes != self.line.axes:
             return
 
-        # Prevent single-coordinate spline error:
-        if len(self.x) > 0:
+        # Duplicate coordinate prevention:
+        if (
+            len(self.x) > 0
+            and (event.xdata, event.ydata) == (self.x[-1], self.y[-1])
+        ):
+            print(
+                Fore.YELLOW + Style.BRIGHT
+                + "[Warning] Skipping repetated coordinate "
+                + f"({event.xdata}, {event.ydata})"
+                + Style.RESET_ALL
+            )
+            return
 
-            # Ignore repeated coordinates:
-            if (
-                event.xdata != self.x[-1]
-                or event.ydata != self.y[-1]
-            ):
-                self.x.append(event.xdata)
-                self.y.append(event.ydata)
+        self.x.append(event.xdata)
+        self.y.append(event.ydata)
 
-                if len(self.x) > 1:
-                    sp = Spline([
-                        Coordinate(x_, y_)
-                        for x_, y_ in zip(self.x, self.y)
-                    ], gen_step=min(self.dimensions) / 100)
+        self._plot_spline(self.x, self.y)
 
-                    x = [x_ for x_, _ in sp.positions]
-                    y = [y_ for _, y_ in sp.positions]
 
-                    sp.plot_input(
-                        cfg.Point.SHAPE,
-                        ms=cfg.Point.SIZE,
-                        alpha=cfg.Point.ALPHA,
-                        color=f"dark{self.color}",
-                    )
+class Line:
 
-                    self.line.set_data(x, y)
-                    self.line.figure.canvas.draw()
+    COLORS = [
+        "red",
+        "green",
+        "salmon",
+        "blue",
+        "orange",
+        "violet",
+        "goldenrod",
+        "gray",
+        "cyan"
+    ]
 
-            else:
-                print(
-                    Fore.YELLOW + Style.BRIGHT
-                    + "[Warning] Skipping repetated coordinate "
-                    + f"({event.xdata}, {event.ydata})"
-                    + Style.RESET_ALL
-                )
+    def __init__(
+        self,
+        ax: matplotlib.axes.Axes,
+        width: float,
+        height: float,
+        x: list[int | float],
+        y: list[int | float],
+        color: str
+    ) -> None:
+        self._ax = ax
+        self._width = width
+        self._height = height
+        self.color = color
 
-        else:
-            self.ax.plot(
-                # Prevent None values with default empty list:
-                event.xdata or [],
-                event.ydata or [],
-                cfg.Point.SHAPE,
-                lw=cfg.Point.SIZE,
-                alpha=cfg.Point.ALPHA,
-                color=f"dark{self.color}"
+        self._line = self._ax.plot(
+            x,
+            y,
+            cfg.Link.SHAPE,
+            lw=cfg.Link.SIZE,
+            alpha=cfg.Link.ALPHA,
+            color=color
+        )[0]
+
+        self._line_builder = _LineBuilder(
+            self._line,
+            self._ax,
+            self._width,
+            self._height,
+            self._color
+        )
+
+    @property
+    def color(self) -> str:
+        """Get line color.
+
+        Returns:
+            color (str): line color.
+        """
+        return self._color
+
+    @color.setter
+    def color(self, value: str) -> None:
+        """Set line color.
+
+        Args:
+            value (str): line color.
+
+        Raises:
+            TypeError: if value is not a string.
+            ValueError: if value is not a valid color.
+        """
+        if not isinstance(value, str):
+            raise TypeError(
+                f"Invalid type '{type(value)}' for color. "
+                + "Expected 'str'"
             )
 
-            self.x.append(event.xdata)
-            self.y.append(event.ydata)
+        if not value in self.COLORS:
+            raise ValueError(
+                f"Invalid color '{value}'. "
+                + f"Valid colors are: {', '.join(self.COLORS)}"
+            )
 
-            self.line.set_data(self.x, self.y)
-            self.line.figure.canvas.draw()
+        self._color = value
+
+    @property
+    def line(self) -> matplotlib.lines.Line2D:
+        """Get line.
+
+        Returns:
+            line (matplotlib.lines.Line2D): line.
+        """
+        return self._line
+
+    @property
+    def line_builder(self) -> _LineBuilder:
+        """Get line builder.
+
+        Returns:
+            line_builder (_LineBuilder): line builder.
+        """
+        return self._line_builder
