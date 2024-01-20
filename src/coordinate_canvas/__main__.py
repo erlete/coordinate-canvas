@@ -14,15 +14,18 @@ Author:
 """
 
 
-import json
-import sys
-from itertools import cycle
-
-import matplotlib.pyplot as plt
-
-from .core.config import COLORS, POSITIONS
-from .core import input_handler as ih
 from .core.line_builder import LineBuilder
+from .core import input_handler as ih
+from .core.config import COLORS, POSITIONS
+import matplotlib.pyplot as plt
+from itertools import cycle
+import sys
+import json
+from .interface.cli import cli
+
+cli()
+
+exit()
 
 
 # Constants' definition:
