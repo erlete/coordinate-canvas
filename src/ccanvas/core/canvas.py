@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from colorama import Fore, Style
 
 from .. import config as cfg
-from .line_builder import Line, _LineBuilder
+from .line import Line
 
 
 class _CanvasProperties:
