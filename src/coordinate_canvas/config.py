@@ -12,6 +12,12 @@ class Positions:
     ALPHA = 0.5
 
 
+class CLI:
+
+    WIDTH = 10
+    HEIGHT = 10
+
+
 COLORS = [
     "red", "green", "salmon", "blue",
     "orange", "violet", "goldenrod", "gray"
