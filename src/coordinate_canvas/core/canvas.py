@@ -1,3 +1,10 @@
+"""Canvas module.
+
+Author:
+    Paulo Sanchez (@erlete)
+"""
+
+
 import json
 import os
 from itertools import cycle
@@ -30,7 +37,7 @@ class _CanvasProperties:
         """Get canvas width.
 
         Returns:
-            int | float: The canvas width.
+            int | float: canvas width.
         """
         return self._width
 
@@ -39,7 +46,7 @@ class _CanvasProperties:
         """Set canvas width.
 
         Args:
-            width (int | float): The canvas width.
+            width (int | float): canvas width.
         """
         if not isinstance(width, (int, float)):
             raise TypeError("Canvas width must be an integer or a float")
@@ -51,7 +58,7 @@ class _CanvasProperties:
         """Get canvas height.
 
         Returns:
-            int | float: The canvas height.
+            int | float: canvas height.
         """
         return self._height
 
@@ -60,7 +67,7 @@ class _CanvasProperties:
         """Set canvas height.
 
         Args:
-            height (int | float): The canvas height.
+            height (int | float): canvas height.
         """
         if not isinstance(height, (int, float)):
             raise TypeError("Canvas height must be an integer or a float")
@@ -72,7 +79,7 @@ class _CanvasProperties:
         """Get number of lines to draw on the canvas.
 
         Returns:
-            int: The number of lines to draw on the canvas.
+            int: number of lines to draw on the canvas.
         """
         return self._line_count
 
@@ -81,7 +88,7 @@ class _CanvasProperties:
         """Set number of lines to draw on the canvas.
 
         Args:
-            line_count (int): The number of lines to draw on the canvas.
+            line_count (int): number of lines to draw on the canvas.
         """
         if not isinstance(line_count, int):
             raise TypeError("Number of lines must be an integer")
@@ -93,7 +100,7 @@ class _CanvasProperties:
         """Get output file path.
 
         Returns:
-            str: The output file path.
+            str: output file path.
         """
         return self._output_file
 
@@ -102,7 +109,7 @@ class _CanvasProperties:
         """Set output file path.
 
         Args:
-            output_file (str): The output file path.
+            output_file (str): output file path.
         """
         if not isinstance(output_file, str):
             raise TypeError("Output file path must be a string")
@@ -111,6 +118,18 @@ class _CanvasProperties:
 
 
 class Canvas(_CanvasProperties):
+    """Canvas class.
+
+    This class is used to create a canvas where the user can draw lines by
+    clicking on it. It uses matplotlib to draw the canvas and handle the
+    events.
+
+    Attributes:
+        width (int | float): canvas width.
+        height (int | float): canvas height.
+        line_count (int): number of lines to draw on the canvas.
+        output_file (str): output file path.
+    """
 
     def __init__(
         self,
@@ -118,7 +137,15 @@ class Canvas(_CanvasProperties):
         height: int | float,
         line_count: int,
         output_file: str
-    ):
+    ) -> None:
+        """Initialize a Canvas instance.
+
+        Args:
+            width (int | float): canvas width.
+            height (int | float): canvas height.
+            line_count (int): number of lines to draw on the canvas.
+            output_file (str): output file path.
+        """
         self.width = width
         self.height = height
         self.line_count = line_count
@@ -155,9 +182,9 @@ class Canvas(_CanvasProperties):
                 "color": (color := next(_colors)),
                 "line": (line := self._ax.plot(
                     [], [],
-                    cfg.Positions.SHAPE,
-                    lw=cfg.Positions.SIZE,
-                    alpha=cfg.Positions.ALPHA,
+                    cfg.Link.SHAPE,
+                    lw=cfg.Link.SIZE,
+                    alpha=cfg.Link.ALPHA,
                     color=color
                 )[0]),
                 "line_builder": LineBuilder(
@@ -171,12 +198,17 @@ class Canvas(_CanvasProperties):
             for _ in range(self._line_count)
         ]
 
-        self._current_data = [self._lines[0].get("line"), 0]
+        self._current_data: list[Any] = [self._lines[0]["line"], 0]
 
-    def _select_line(self, event):
+    def _select_line(self, event: Any) -> None:
+        """Select a line to draw on.
+
+        Args:
+            event (Any): matplotlib event object.
+        """
         if event.key.isnumeric() and 1 <= int(event.key) <= self.line_count:
-            self._lines[self._current_data[1]].get("line_builder").disconnect()
-            self._lines[int(event.key) - 1].get("line_builder").connect()
+            self._lines[self._current_data[1]]["line_builder"].disconnect()
+            self._lines[int(event.key) - 1]["line_builder"].connect()
 
             self._current_data[0] = self._lines[int(event.key) - 1].get("line")
             self._current_data[1] = int(event.key) - 1
@@ -218,7 +250,7 @@ class Canvas(_CanvasProperties):
         saves the data to a JSON file and exits the program.
 
         Args:
-            event (Any): The event object.
+            event (Any): matplotlib event object.
         """
         # If the event is a key press event, but not escape, ignore it:
         if hasattr(event, "key") and event.key != "escape":

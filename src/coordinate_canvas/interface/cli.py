@@ -41,7 +41,7 @@ from ..core.canvas import Canvas
     type=click.IntRange(min=1, max=9)
 )
 def cli(width, height, output, line_count):
-    """Plot a canvas for coordinate drawing
+    """Plot a canvas for coordinate drawing.
 
     This command allows the user to plot a canvas of a given width and height
     to draw coordinates on it. The user can also specify the number of lines

@@ -102,9 +102,9 @@ class LineBuilder:
                     y = [y_ for _, y_ in sp.positions]
 
                     sp.plot_input(
-                        cfg.Input.SHAPE,
-                        ms=cfg.Input.SIZE,
-                        alpha=cfg.Input.ALPHA,
+                        cfg.Point.SHAPE,
+                        ms=cfg.Point.SIZE,
+                        alpha=cfg.Point.ALPHA,
                         color=f"dark{self.color}",
                     )
 
@@ -124,9 +124,9 @@ class LineBuilder:
                 # Prevent None values with default empty list:
                 event.xdata or [],
                 event.ydata or [],
-                cfg.Input.SHAPE,
-                lw=cfg.Input.SIZE,
-                alpha=cfg.Input.ALPHA,
+                cfg.Point.SHAPE,
+                lw=cfg.Point.SIZE,
+                alpha=cfg.Point.ALPHA,
                 color=f"dark{self.color}"
             )
 
