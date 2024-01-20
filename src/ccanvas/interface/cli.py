@@ -11,7 +11,7 @@ from .. import config as cfg
 from ..core.canvas import Canvas
 
 
-@click.command("coordinate-canvas")
+@click.command("ccanvas")
 @click.option(
     "--width",
     "-w",
