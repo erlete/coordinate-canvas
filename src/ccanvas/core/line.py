@@ -25,6 +25,10 @@ class _LineBuilder:
     in a list of tuples.
     """
 
+    DISABLE_EVENTS = (
+        ("button_press_event", 3),
+    )
+
     def __init__(
         self,
         line: Any,
@@ -113,6 +117,21 @@ class _LineBuilder:
         self.line.set_data(x, y)
         self.refresh()
 
+    def _is_disabled(self, event: Any) -> bool:
+        """Determine whether an event is disabled.
+
+        Args:
+            event (Any): event to check.
+
+        Returns:
+            is_disabled (bool): whether the event is disabled or not.
+        """
+        for disabled in self.DISABLE_EVENTS:
+            if event.name == disabled[0] and event.button == disabled[1]:
+                return True
+
+        return False
+
     def __call__(self, event: matplotlib.backend_bases.MouseEvent) -> None:
         """Click event handler.
 
@@ -124,6 +143,10 @@ class _LineBuilder:
         """
         # Axes validation:
         if event.inaxes != self.line.axes:
+            return
+
+        # Disabled events:
+        if self._is_disabled(event):
             return
 
         # Duplicate coordinate prevention:
