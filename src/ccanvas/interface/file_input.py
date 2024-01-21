@@ -118,28 +118,27 @@ class InputFileHandler(FileHandler):
             data = json.load(fp)
 
         try:
+            # Structure check:
             assert isinstance(data, dict)
-            assert all(isinstance(key, str) for key in data.keys())
+
+            # Key tree check:
             assert all(
-                re.match(r"^line_\d{1}$", key) is not None
+                isinstance(key, str)
+                and re.match(r"^line_[1-9]{1}$", key) is not None
                 for key in data.keys()
             )
-            assert all(isinstance(value, dict) for value in data.values())
+
+            # Value tree check:
             assert all(
-                tuple(value.keys()) == ("x", "y")
-                for value in data.values()
-            )
-            assert all(
-                isinstance(sub_value, list)
-                for value in data.values()
-                for sub_value in value.values()
-            )
-            assert all(
-                isinstance(coordinate, float)
-                for value in data.values()
-                for sub_value in value.values()
-                for coordinate in sub_value
+                isinstance(value_1, dict)
+                and tuple(value_1.keys()) == ("x", "y")
+                and isinstance(value_2, list)
+                and isinstance(value_3, float)
+                for value_1 in data.values()
+                for value_2 in value_1.values()
+                for value_3 in value_2
                 # I know this is complex as hell. Not gonna change it, though.
+                # I lied, I changed it. It's still complex as hell.
             )
 
         except AssertionError:
