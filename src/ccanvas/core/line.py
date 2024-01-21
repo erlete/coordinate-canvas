@@ -70,6 +70,10 @@ class _LineBuilder:
         """Disconnect line builder from matplotlib plot."""
         self.line.figure.canvas.mpl_disconnect(self.cid)
 
+    def refresh(self) -> None:
+        """Refresh plot contents."""
+        self.line.figure.canvas.draw()
+
     def _plot_spline(
         self,
         x: Sequence[int | float],
@@ -107,7 +111,7 @@ class _LineBuilder:
             )
 
         self.line.set_data(x, y)
-        self.line.figure.canvas.draw()
+        self.refresh()
 
     def __call__(self, event: matplotlib.backend_bases.MouseEvent) -> None:
         """Click event handler.

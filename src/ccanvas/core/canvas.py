@@ -273,6 +273,7 @@ class Canvas(_CanvasProperties):
                 + f" {self._current_index + 1}...",
                 fontsize="large", fontweight="bold"
             )
+            self._lines[self._current_index].line_builder.refresh()
 
     def _save(self) -> None:
         """Save data to JSON file."""
