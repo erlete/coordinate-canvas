@@ -1,11 +1,100 @@
 import json
 import os
+from abc import ABCMeta, abstractmethod
 
 import regex as re
 from colorama import Fore, Style
 
 
-class InputFileHandler:
+class FileHandler(metaclass=ABCMeta):
+    """Abstract file handler class.
+
+    Attributes:
+        path (str): file path.
+        VALID_EXTENSIONS (tuple[str]): sequence of supported file extensions
+            (lowercase with no dots).
+    """
+
+    VALID_EXTENSIONS: tuple[str] = ("",)
+
+    def __init__(self, path: str) -> None:
+        """Initialize FileHandler instance.
+
+        Args:
+            path (str): file path.
+        """
+        self.path = path
+
+    @property
+    def path(self) -> str:
+        """Get file path.
+
+        Returns:
+            str: file path.
+        """
+        return self._path
+
+    @path.setter
+    def path(self, path: str) -> None:
+        """Set file path.
+
+        Args:
+            path (str): file path.
+        """
+        if not isinstance(path, str):
+            raise TypeError("file path must be a string")
+
+        self._path = path
+
+    def validate(self) -> None:
+        """Determine whether the file is valid or not.
+
+        This method is responsible for executing all the pertinent checks to
+        determine whether the file is valid or not.
+
+        Raises:
+            FileNotFoundError: if file does not exist.
+            TypeError: if file has got the incorrect format.
+            ValueError: if file does not have the correct structure.
+        """
+        self.validate_existence()
+        self.validate_extension()
+        self.validate_structure()
+
+    def validate_existence(self) -> None:
+        """Check if file exists.
+
+        Raises:
+            FileNotFoundError: if file does not exist.
+        """
+        if not os.path.exists(self._path):
+            raise FileNotFoundError(f"file \"{self._path}\" does not exist")
+
+    def validate_extension(self) -> None:
+        """Check file extension format.
+
+        Raises:
+            TypeError: if file has got the incorrect format.
+        """
+        name = self._path.strip().split(".")[-1].lower()
+
+        if not name in self.VALID_EXTENSIONS:
+            raise TypeError(
+                f"file must contain one of the following extensions: "
+                + ", ".join(self.VALID_EXTENSIONS)
+            )
+
+    @abstractmethod
+    def validate_structure(self) -> None:
+        """Check if file has the correct structure.
+
+        Raises:
+            ValueError: if file does not have the correct structure.
+        """
+        pass
+
+
+class InputFileHandler(FileHandler):
     """Input file handler class.
 
     This class is responsible for receiving the path to an input file, as well
@@ -13,75 +102,13 @@ class InputFileHandler:
 
     Attributes:
         path (str): input file path.
-        EXTENSIONS (tuple[str]): sequence of supported file extensions
+        VALID_EXTENSIONS (tuple[str]): sequence of supported file extensions
             (lowercase with no dots).
     """
 
-    EXTENSIONS: tuple[str] = (
-        "json",
-    )
+    VALID_EXTENSIONS: tuple[str] = ("json",)
 
-    def __init__(self, path: str) -> None:
-        """Initialize an InputFileHandler instance.
-
-        This method also tests the input file existence, extension and
-        structure automatically.
-
-        Args:
-            path (str): input file path.
-        """
-        self.path = path
-
-        # File checks' execution:
-        self._check_file_exists()
-        self._check_file_extension()
-        self._check_file_structure()
-
-    @property
-    def path(self) -> str:
-        """Get input file path.
-
-        Returns:
-            str: input file path.
-        """
-        return self._path
-
-    @path.setter
-    def path(self, path: str) -> None:
-        """Set input file path.
-
-        Args:
-            path (str): input file path.
-        """
-        if not isinstance(path, str):
-            raise TypeError("input file path must be a string")
-
-        self._path = path
-
-    def _check_file_exists(self) -> None:
-        """Check if input file exists.
-
-        Raises:
-            FileNotFoundError: if input file does not exist.
-        """
-        if not os.path.exists(self._path):
-            raise FileNotFoundError(
-                f"input file \"{self._path}\" does not exist"
-            )
-
-    def _check_file_extension(self) -> None:
-        """Check file extension format.
-
-        Raises:
-            TypeError: if input file has got the incorrect format.
-        """
-        if not self._path.strip().split(".")[-1].lower() in self.EXTENSIONS:
-            raise TypeError(
-                "input file must be one of the following formats: "
-                + ", ".join(self.EXTENSIONS)
-            )
-
-    def _check_file_structure(self) -> None:
+    def validate_structure(self) -> None:
         """Check if input file has the correct structure.
 
         Raises:

@@ -60,15 +60,6 @@ def cli(width, height, input, output, line_count):
 
     # Input file check:
     if input is not None:
-        input_file = InputFileHandler(input)
+        InputFileHandler(input).validate()
 
-    Canvas(
-        width,
-        height,
-        line_count,
-        output,
-        input_file=(
-            InputFileHandler(input).path
-            if input is not None else None
-        )
-    ).run()
+    Canvas(width, height, line_count, output, input_file=input or None).run()
