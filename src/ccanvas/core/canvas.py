@@ -362,8 +362,14 @@ class Canvas(_CanvasProperties):
             fontweight="bold"
         )
         self._ax.set_title(
-            f"Press keys 1 to {self._line_count} to switch lines"
-            + "\nClose the window, press ESC or Q to save and exit",
+            (
+                f"Press keys 1 to {self._line_count} to switch lines\n"
+                if self._line_count > 1
+                else "\n"
+            )
+            + "ESC or Q to save and exit\n"
+            + "BACKSPACE to remove last point\n"
+            + "Right click to remove a point",
             fontsize="medium",
             fontstyle="italic"
         )
