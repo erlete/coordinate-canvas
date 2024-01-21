@@ -6,7 +6,7 @@ import regex as re
 from colorama import Fore, Style
 
 
-class FileHandler(metaclass=ABCMeta):
+class _FileHandler(metaclass=ABCMeta):
     """Abstract file handler class.
 
     Attributes:
@@ -94,7 +94,7 @@ class FileHandler(metaclass=ABCMeta):
         pass
 
 
-class InputFileHandler(FileHandler):
+class InputFileHandler(_FileHandler):
     """Input file handler class.
 
     This class is responsible for receiving the path to an input file, as well
