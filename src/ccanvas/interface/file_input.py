@@ -1,3 +1,13 @@
+"""File handling module.
+
+This module contains the classes primarily responsible for handling input
+files.
+
+Author:
+    Paulo Sanchez (@erlete)
+"""
+
+
 import json
 import os
 from abc import ABCMeta, abstractmethod
@@ -141,6 +151,7 @@ class InputFileHandler(_FileHandler):
                 # I lied, I changed it. It's still complex as hell.
             )
 
+        # Immediate program termination:
         except AssertionError:
             print(
                 Fore.RED + Style.BRIGHT
