@@ -9,7 +9,7 @@ import click
 
 from .. import config as cfg
 from ..core.canvas import Canvas
-from .file_input import InputFileHandler
+from .file_handling import JSONFileHandler
 
 
 @click.command("ccanvas")
@@ -60,6 +60,6 @@ def cli(width, height, input, output, line_count):
 
     # Input file check:
     if input is not None:
-        InputFileHandler(input).validate()
+        JSONFileHandler(input).validate()
 
     Canvas(width, height, line_count, output, input_file=input or None).run()

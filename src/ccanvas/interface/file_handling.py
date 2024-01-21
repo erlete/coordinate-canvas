@@ -104,11 +104,11 @@ class _FileHandler(metaclass=ABCMeta):
         pass
 
 
-class InputFileHandler(_FileHandler):
-    """Input file handler class.
+class JSONFileHandler(_FileHandler):
+    """JSON input file handler class.
 
-    This class is responsible for receiving the path to an input file, as well
-    as checking its existence, extension and structure.
+    This class is responsible for receiving the path to a JSON input file, as
+    well as checking its existence, extension and structure.
 
     Attributes:
         path (str): input file path.
