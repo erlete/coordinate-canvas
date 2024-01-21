@@ -10,7 +10,10 @@ import os
 from itertools import cycle
 from typing import Any
 
+import matplotlib
 import matplotlib.pyplot as plt
+from bidimensional import Coordinate
+from bidimensional import operations as op
 from colorama import Fore, Style
 
 from .. import config as cfg
@@ -207,6 +210,8 @@ class Canvas(_CanvasProperties):
         # Figure setup:
         self._fig = plt.gcf()
         self._fig.canvas.mpl_connect("key_press_event", self._select_line)
+        self._fig.canvas.mpl_connect("key_press_event", self._remove_point)
+        self._fig.canvas.mpl_connect("button_press_event", self._remove_point)
         self._fig.canvas.mpl_connect("key_release_event", self._exit)
         self._fig.canvas.mpl_connect("close_event", self._exit)
 
@@ -223,6 +228,59 @@ class Canvas(_CanvasProperties):
             )
             for _ in range(self._line_count)
         ]
+
+    def _remove_point(self, event: Any) -> None:
+        """Remove a point from the line.
+
+        This method removes single point data and updates the spline that
+        joins the points together. However, it does not remove the visual
+        point from the plot (let's call it a feature).
+
+        Args:
+            event (Any): matplotlib event object.
+        """
+        is_key = isinstance(event, matplotlib.backend_bases.KeyEvent)
+
+        if (
+            is_key and event.key == "backspace"
+            and len(self._lines[self._current_index].line_builder.x) > 0
+        ):
+            line = self._lines[self._current_index]
+
+            line.line_builder.x.pop()
+            line.line_builder.y.pop()
+            line.line_builder.line.set_data(
+                line.line_builder.x,
+                line.line_builder.y
+            )
+
+            line.line_builder._plot_spline(
+                line.line_builder.x,
+                line.line_builder.y
+            )
+
+        elif not is_key and event.button == 3:
+            removal_radius = self.width / self.height / 10
+            location = Coordinate(event.xdata, event.ydata)
+            line = self._lines[self._current_index]
+            coords = [
+                Coordinate(x, y)
+                for x, y in zip(line.line_builder.x, line.line_builder.y)
+            ]
+
+            for coord in coords:
+                if op.distance(location, coord) < removal_radius:
+                    line.line_builder.x.remove(coord.x)
+                    line.line_builder.y.remove(coord.y)
+                    line.line_builder.line.set_data(
+                        line.line_builder.x,
+                        line.line_builder.y
+                    )
+                    line.line_builder._plot_spline(
+                        line.line_builder.x,
+                        line.line_builder.y
+                    )
+                    break
 
     def _select_line(self, event: Any) -> None:
         """Select a line to draw on.
@@ -244,6 +302,7 @@ class Canvas(_CanvasProperties):
                 + f" {self._current_index + 1}...",
                 fontsize="large", fontweight="bold"
             )
+            self._lines[self._current_index].line_builder.refresh()
 
     def _save(self) -> None:
         """Save data to JSON file."""
@@ -303,8 +362,14 @@ class Canvas(_CanvasProperties):
             fontweight="bold"
         )
         self._ax.set_title(
-            f"Press keys 1 to {self._line_count} to switch lines"
-            + "\nClose the window, press ESC or Q to save and exit",
+            (
+                f"Press keys 1 to {self._line_count} to switch lines\n"
+                if self._line_count > 1
+                else "\n"
+            )
+            + "ESC or Q to save and exit\n"
+            + "BACKSPACE to remove last point\n"
+            + "Right click to remove a point",
             fontsize="medium",
             fontstyle="italic"
         )
