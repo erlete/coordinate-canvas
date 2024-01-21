@@ -207,6 +207,7 @@ class Canvas(_CanvasProperties):
         # Figure setup:
         self._fig = plt.gcf()
         self._fig.canvas.mpl_connect("key_press_event", self._select_line)
+        self._fig.canvas.mpl_connect("key_press_event", self._remove_point)
         self._fig.canvas.mpl_connect("key_release_event", self._exit)
         self._fig.canvas.mpl_connect("close_event", self._exit)
 
@@ -223,6 +224,34 @@ class Canvas(_CanvasProperties):
             )
             for _ in range(self._line_count)
         ]
+
+    def _remove_point(self, event: Any) -> None:
+        """Remove a point from the line.
+
+        This method removes last point data and updates the spline that joins
+        the points together. However, it does not remove the visual point from
+        the plot (let's call it a feature).
+
+        Args:
+            event (Any): matplotlib event object.
+        """
+        if (
+            event.key == "backspace"
+            and len(self._lines[self._current_index].line_builder.x) > 0
+        ):
+            line = self._lines[self._current_index]
+
+            line.line_builder.x.pop()
+            line.line_builder.y.pop()
+            line.line_builder.line.set_data(
+                line.line_builder.x,
+                line.line_builder.y
+            )
+
+            line.line_builder._plot_spline(
+                line.line_builder.x,
+                line.line_builder.y
+            )
 
     def _select_line(self, event: Any) -> None:
         """Select a line to draw on.
